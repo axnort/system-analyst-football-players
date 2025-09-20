@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Compare Players</title>
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="/static/css/compare.css" />
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Navbar (link tidak diubah) -->
+  <nav class="navbar">
+    <div class="nav-inner">
+      <a href="/" class="brand">
+        <span class="brand-dot"></span>
+        <span>Fajar Febriansyah Group</span>
+      </a>
+      <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/players">Performance Player</a>
+        <a href="/compare" class="active">Compare Player</a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- Title -->
+    <h1 class="page-title">Compare Players</h1>
+
+    <!-- Top compare search (tetap gunakan player1 / player2 / compare-button) -->
+    <div id="compare" class="top-compare">
+      <div class="search-wrap">
+        <input type="text" id="player1" placeholder="Search Player 1..." value="{{ request.args.get('player1', '') }}">
+        <button id="compare-button" class="icon-btn" title="Compare">🔎</button>
+      </div>
+      <div class="search-wrap">
+        <input type="text" id="player2" placeholder="Search Player 2..." value="{{ request.args.get('player2', '') }}">
+        <button id="compare-button-2" class="icon-btn" title="Compare">🔎</button>
+      </div>
+      <button id="compare-submit" class="cta">Compare</button>
+    </div>
+
+    {% if player1 and player2 %}
+    <!-- 3-column layout -->
+    <section class="compare-grid">
+      <!-- Left: Player 1 Card -->
+      <aside class="card player-side">
+        <h2 class="side-title">Player 1</h2>
+
+        <div class="selected-player">
+          <img src="{{ player1.Photo }}" class="avatar" alt="Player 1">
+          <h3 class="pname">{{ player1.Name }}</h3>
+          <p class="club">{{ player1.Team }}</p>
+          {% if player1.Season %}<p class="season">{{ player1.Season }}</p>{% endif %}
+          <div class="stars">{% for _ in range((player1.Rating|int if player1.Rating else 5)) %}★{% endfor %}</div>
+        </div>
+
+        <div class="bio">
+          <div><span class="label">Name</span> : {{ player1.Name }}</div>
+          <div><span class="label">Club</span> : {{ player1.Team }}</div>
+          {% if player1.Position %}<div><span class="label">Position</span> : {{ player1.Position }}</div>{% endif %}
+          {% if player1.Age %}<div><span class="label">Age</span> : {{ player1.Age }}</div>{% endif %}
+          {% if player1.Height %}<div><span class="label">Height</span> : {{ player1.Height }} cm</div>{% endif %}
+          {% if player1.Weight %}<div><span class="label">Weight</span> : {{ player1.Weight }} kg</div>{% endif %}
+        </div>
+
+        <div class="attr-grid">
+          <div class="attr-col">
+            <h4>Technical</h4>
+            <ul>
+              <li><span>Technical</span><span class="value">{{ player1.Technical }}</span></li>
+              <li><span>Attacking</span><span class="value">{{ player1.Attacking }}</span></li>
+              <li><span>Vision</span><span class="value">{{ player1.Vision }}</span></li>
+            </ul>
+          </div>
+          <div class="attr-col">
+            <h4>Physical</h4>
+            <ul>
+              <li><span>Speed</span><span class="value">{{ player1.Speed }}</span></li>
+              <li><span>Aerial</span><span class="value">{{ player1.Aerial }}</span></li>
+              <li><span>Defending</span><span class="value">{{ player1.Defending }}</span></li>
+            </ul>
+          </div>
+          <div class="attr-col">
+            <h4>Mental</h4>
+            <ul>
+              <li><span>Mental</span><span class="value">{{ player1.Mental }}</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="switcher">
+          <span>Change Player</span>
+          <div class="switcher-actions">
+            {% if prev1 %}
+            <a class="btn prev" href="/compare?player1={{ prev1.Name }}&player2={{ request.args.get('player2', player2.Name) }}">&larr; {{ prev1.Name }}</a>
+            {% endif %}
+            {% if next1 %}
+            <a class="btn next" href="/compare?player1={{ next1.Name }}&player2={{ request.args.get('player2', player2.Name) }}">{{ next1.Name }} &rarr;</a>
+            {% endif %}
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center: Radar Chart -->
+      <section class="card chart-card">
+        <canvas id="comparisonChart"></canvas>
+      </section>
+
+      <!-- Right: Player 2 Card -->
+      <aside class="card player-side">
+        <h2 class="side-title">Player 2</h2>
+
+        <div class="selected-player">
+          <img src="{{ player2.Photo }}" class="avatar" alt="Player 2">
+          <h3 class="pname">{{ player2.Name }}</h3>
+          <p class="club">{{ player2.Team }}</p>
+          {% if player2.Season %}<p class="season">{{ player2.Season }}</p>{% endif %}
+          <div class="stars">{% for _ in range((player2.Rating|int if player2.Rating else 5)) %}★{% endfor %}</div>
+        </div>
+
+        <div class="bio">
+          <div><span class="label">Name</span> : {{ player2.Name }}</div>
+          <div><span class="label">Club</span> : {{ player2.Team }}</div>
+          {% if player2.Position %}<div><span class="label">Position</span> : {{ player2.Position }}</div>{% endif %}
+          {% if player2.Age %}<div><span class="label">Age</span> : {{ player2.Age }}</div>{% endif %}
+          {% if player2.Height %}<div><span class="label">Height</span> : {{ player2.Height }} cm</div>{% endif %}
+          {% if player2.Weight %}<div><span class="label">Weight</span> : {{ player2.Weight }} kg</div>{% endif %}
+        </div>
+
+        <div class="attr-grid">
+          <div class="attr-col">
+            <h4>Technical</h4>
+            <ul>
+              <li><span>Technical</span><span class="value">{{ player2.Technical }}</span></li>
+              <li><span>Attacking</span><span class="value">{{ player2.Attacking }}</span></li>
+              <li><span>Vision</span><span class="value">{{ player2.Vision }}</span></li>
+            </ul>
+          </div>
+          <div class="attr-col">
+            <h4>Physical</h4>
+            <ul>
+              <li><span>Speed</span><span class="value">{{ player2.Speed }}</span></li>
+              <li><span>Aerial</span><span class="value">{{ player2.Aerial }}</span></li>
+              <li><span>Defending</span><span class="value">{{ player2.Defending }}</span></li>
+            </ul>
+          </div>
+          <div class="attr-col">
+            <h4>Mental</h4>
+            <ul>
+              <li><span>Mental</span><span class="value">{{ player2.Mental }}</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="switcher">
+          <span>Change Player</span>
+          <div class="switcher-actions">
+            {% if prev2 %}
+            <a class="btn prev" href="/compare?player1={{ request.args.get('player1', player1.Name) }}&player2={{ prev2.Name }}">&larr; {{ prev2.Name }}</a>
+            {% endif %}
+            {% if next2 %}
+            <a class="btn next" href="/compare?player1={{ request.args.get('player1', player1.Name) }}&player2={{ next2.Name }}">{{ next2.Name }} &rarr;</a>
+            {% endif %}
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    {% elif player1 and not player2 %}
+      <p class="notification warn">Player 2 tidak ditemukan.</p>
+    {% elif player2 and not player1 %}
+      <p class="notification warn">Player 1 tidak ditemukan.</p>
+    {% else %}
+      <p class="notification error">Tidak ada pemain. Silakan pilih pemain untuk dibandingkan!</p>
+    {% endif %}
+  </main>
+
+  <!-- Inject data dari server (aman, hanya pass ke window) -->
+  <script>
+    {% if player1 %} window.PLAYER1 = {{ player1 | tojson }}; {% endif %}
+    {% if player2 %} window.PLAYER2 = {{ player2 | tojson }}; {% endif %}
+  </script>
+
+  <!-- Scripts -->
+  <script src="/static/js/compare.js"></script>
+</body>
+</html>

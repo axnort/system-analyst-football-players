@@ -1,0 +1,130 @@
+/* ====== Base / Theme ====== */
+:root{
+--bg: #0f172a;
+--panel: #0b132b;
+--card: #1e293b;
+--muted: #94a3b8;
+--line: rgba(255,255,255,.08);
+--accent: #22c55e;
+--accent-2: #16a34a;
+--text: #e5e7eb;
+--text-strong: #ffffff;
+--shadow: 0 10px 30px rgba(0,0,0,.35);
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+margin:0;
+font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial;
+color:var(--text);
+background:var(--bg);
+}
+
+/* ====== Navbar (match theme) ====== */
+.navbar{
+background:var(--panel);
+border-bottom:2px solid var(--accent);
+padding:12px 20px;
+}
+.nav-container{
+max-width:1100px;margin:0 auto;
+display:flex;align-items:center;justify-content:space-between;
+}
+.logo{display:flex;align-items:center;gap:10px}
+.logo img{width:36px;height:36px;border-radius:50%}
+.logo span{font-weight:700;color:var(--accent)}
+.nav-menu{list-style:none;display:flex;gap:18px;margin:0;padding:0}
+.nav-menu a{
+color:#fff;text-decoration:none;font-weight:600;
+padding:6px 12px;border-radius:8px;transition:.15s ease;
+}
+.nav-menu a:hover,.nav-menu a.active{background:var(--accent);color:#0b132b}
+
+/* ====== Page ====== */
+.main{max-width:1100px;margin:0 auto;padding:28px 20px 60px}
+.title{
+margin:10px 0 18px; text-align:center;
+color:var(--accent); font-size:32px; font-weight:800;
+}
+.toolbar{margin:0 0 12px;display:flex;justify-content:flex-start}
+.back-btn{
+display:inline-flex;align-items:center;gap:8px;
+border:1px solid var(--line); color:#eafff3;
+background:var(--card); border-radius:999px;
+padding:8px 14px; text-decoration:none; font-weight:700;
+transition:transform .15s ease, background .15s ease;
+}
+.back-btn .chev{font-size:18px;line-height:1}
+.back-btn:hover{background:var(--accent);color:#0b132b;transform:translateY(-1px)}
+
+/* ====== Group Card ====== */
+.group-card{
+background:var(--card);
+border:1px solid var(--line);
+border-radius:14px;
+box-shadow:var(--shadow);
+margin:18px 0 24px;
+overflow:hidden;
+}
+.group-title{
+margin:0;padding:14px 16px;
+font-size:18px;font-weight:800;letter-spacing:.2px;
+color:var(--text-strong); background:rgba(255,255,255,.03);
+border-bottom:1px solid var(--line);
+display:flex;align-items:center;gap:10px;cursor:pointer;
+}
+.group-title::after{
+content:"▾"; margin-left:auto; color:var(--muted); transition:transform .2s ease;
+}
+.group-card.collapsed .group-title::after{transform:rotate(-90deg)}
+
+/* ====== Table ====== */
+.table-wrap{overflow:auto}
+.klasemen-table{
+width:100%; border-collapse:separate; border-spacing:0;
+min-width:720px;
+}
+.klasemen-table thead th{
+position:sticky; top:0; z-index:1;
+background:rgba(11,19,43,.95);
+color:#cbd5e1; font-weight:800;
+text-align:right; padding:12px 10px;
+border-bottom:1px solid var(--line);
+backdrop-filter:saturate(120%) blur(2px);
+}
+.klasemen-table thead th.col-team{ text-align:left; padding-left:16px }
+.klasemen-table thead th.col-poin{ text-align:center }
+
+.klasemen-table tbody td{
+padding:12px 10px; border-bottom:1px solid var(--line);
+text-align:right; color:var(--text);
+}
+.klasemen-table tbody tr:nth-child(odd){ background:rgba(255,255,255,.02) }
+.klasemen-table tbody td.team-name{
+text-align:left; font-weight:700; color:#fff; padding-left:16px;
+}
+.klasemen-table tbody td.poin{
+text-align:center; font-weight:800; color:#fff;
+background:linear-gradient(180deg, rgba(34,197,94,.12), rgba(34,197,94,.06));
+border-left:1px solid var(--line);
+}
+
+/* Selisih Gol warna +/− */
+.sg-pos{ color:#86efac; font-weight:800 }
+.sg-neg{ color:#fca5a5; font-weight:800 }
+.sg-zero{ color:#cbd5e1; font-weight:800 }
+
+/* Empty state */
+.empty-state{
+margin:16px 0; color:var(--muted); text-align:center;
+background:rgba(255,255,255,.03); border:1px dashed var(--line);
+padding:16px; border-radius:12px;
+}
+
+/* Responsive */
+@media (max-width: 640px){
+.title{font-size:26px}
+.group-title{font-size:16px}
+.klasemen-table{min-width:640px}
+}

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>PIN Authentication</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth_pin.css') }}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+<div class="nav-inner">
+    <a href="/" class="brand">
+    <span class="brand-dot"></span>
+    <span>Fajar Febriansyah Group</span>
+    </a>
+    <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/clubs">Performance Player</a>
+    <a href="/pin_admin">Compare</a>
+    </div>
+</div>
+</nav>
+
+<main class="wrap">
+<section class="card">
+    <header class="card-header">
+    <span class="logo-dot"></span>
+    <h1 class="title">PIN Authentication</h1>
+    </header>
+
+    <div class="card-body">
+    {% if message %}
+        <p class="alert">{{ message }}</p>
+    {% endif %}
+
+    {# ==== MODE KLUB (auth_club) ==== #}
+    {% if club_slug %}
+        <form method="post" action="{{ url_for('urls.auth_club', slug=club_slug, ku=ku) }}">
+        <div class="form-row">
+            <label>Club</label>
+            <input type="text" class="input readonly"
+                    value="{{ club_slug.replace('-', ' ')|title }}" readonly>
+        </div>
+
+        <div class="form-row">
+            <label>PIN</label>
+            <div class="pin-wrap">
+            <input type="password" name="pin" class="input" id="pinField"
+                    placeholder="Masukkan PIN" autocomplete="current-password" required>
+            <button class="toggle" type="button" id="pinToggle" title="Show/Hide PIN" aria-label="Show/Hide PIN">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                </svg>
+            </button>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{ url_for('urls.clubs', ku=ku or 'KU8') }}" class="btn btn-ghost">Cancel</a>
+        </div>
+        </form>
+
+    {# ==== MODE PLAYER (lama) ==== #}
+    {% elif player %}
+        <form method="post" action="{{ url_for('urls.auth_check', name=player.Name) }}">
+        <div class="form-row">
+            <label>Player</label>
+            <input type="text" class="input readonly" value="{{ player.Name }}" readonly>
+        </div>
+
+        <div class="form-row">
+            <label>Club</label>
+            <input type="text" name="club" class="input readonly" value="{{ player.Club }}" readonly>
+        </div>
+
+        <div class="form-row">
+            <label>PIN</label>
+            <div class="pin-wrap">
+            <input type="password" name="pin" class="input" id="pinField"
+                    placeholder="Masukkan PIN" autocomplete="current-password" required>
+            <button class="toggle" type="button" id="pinToggle" title="Show/Hide PIN" aria-label="Show/Hide PIN">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
+                </svg>
+            </button>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button type="submit" class="btn btn-primary">Submit</button>
+            <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-ghost">Cancel</a>
+        </div>
+        </form>
+
+    {% else %}
+        <p class="alert">Context tidak tersedia. Buka halaman ini dari daftar klub atau detail pemain.</p>
+        <div class="actions">
+        <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-primary">Kembali ke Daftar Klub</a>
+        </div>
+    {% endif %}
+    </div>
+</section>
+</main>
+
+<script src="{{ url_for('static', filename='js/auth_pin.js') }}"></script>
+</body>
+</html>

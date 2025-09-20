@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ player.Name }}</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="/static/css/player.css">
+
+  <!-- Chart.js (biarkan link ini sesuai kebiasaanmu) -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <div class="navbar">
+    <a href="/">Home</a>
+    <a href="/players">All Players</a>
+    <a href="/pin_admin">Compare</a>
+  </div>
+
+  <div class="container">
+    <a href="/players" class="back-btn">← Back to Players</a>
+
+    {% if player %}
+    <!-- GRID ATAS: PLAYER INFO (kiri) + ATTRIBUTE (kanan) -->
+    <section class="top-grid">
+
+      <!-- LEFT: PLAYER INFO + RADAR -->
+      <div class="card info-card">
+        <h3 class="card-title">PLAYER INFO</h3>
+
+        <div class="info-top">
+          <img src="{{ player.Photo }}" alt="player" class="info-photo" />
+          <ul class="info-list">
+            <li><span>Name</span>: <strong>{{ player.Name }}</strong></li>
+            <li><span>Club</span>: {{ player.Team }}</li>
+            <li><span>Position</span>: {{ player.Position }}</li>
+            <li><span>Age</span>: {{ player.Age or '' }}</li>
+            <li><span>Season</span>: {{ player.Season or '' }}</li>
+            <li><span>Height</span>: {{ player.Height }} cm</li>
+            <li><span>Weight</span>: {{ player.Weight }} kg</li>
+          </ul>
+        </div>
+
+        <!-- Radar di DALAM kartu info -->
+        <div class="radar-wrap">
+          <canvas id="perfRadar"></canvas>
+        </div>
+      </div>
+
+      <!-- RIGHT: ATTRIBUTE 3 KOLOM -->
+      <div class="card attr-card">
+        <h3 class="card-title center">ATTRIBUTE</h3>
+        <div class="attr-grid">
+          <!-- PHYSICAL -->
+          <table class="attr-table">
+            <thead><tr><th colspan="2">PHYSICAL</th></tr></thead>
+            <tbody>
+              <tr><td>Acceleration</td>      <td class="value">{{ player.Acceleration }}</td></tr>
+              <tr><td>Agility</td>           <td class="value">{{ player.Agility }}</td></tr>
+              <tr><td>Balance</td>           <td class="value">{{ player.Balance }}</td></tr>
+              <tr><td>Jumping Reach</td>     <td class="value">{{ player.JumpingReach }}</td></tr>
+              <tr><td>Natural Fitness</td>   <td class="value">{{ player.NaturalFitness }}</td></tr>
+              <tr><td>Pace</td>              <td class="value">{{ player.Pace }}</td></tr>
+              <tr><td>Stamina</td>           <td class="value">{{ player.Stamina }}</td></tr>
+              <tr><td>Strength</td>          <td class="value">{{ player.Strength }}</td></tr>
+              <tr><td>Goalkeeper Ability</td><td class="value">{{ player.GoalkeeperAbility }}</td></tr>
+              <tr><td>Condition</td>         <td class="value">{{ player.ConditionPct }}</td></tr>
+              <tr><td>Preferred Foot</td>    <td class="value">{{ player.PreferredFoot }}</td></tr>
+            </tbody>
+          </table>
+
+          <!-- TECHNICAL -->
+          <table class="attr-table">
+            <thead><tr><th colspan="2">TECHNICAL</th></tr></thead>
+            <tbody>
+              <tr><td>Dribbling</td>      <td class="value">{{ player.Dribbling }}</td></tr>
+              <tr><td>Passing</td>        <td class="value">{{ player.Passing }}</td></tr>
+              <tr><td>Corners</td>        <td class="value">{{ player.Corners }}</td></tr>
+              <tr><td>Crossing</td>       <td class="value">{{ player.Crossing }}</td></tr>
+              <tr><td>First Touch</td>    <td class="value">{{ player.FirstTouch }}</td></tr>
+              <tr><td>Finishing</td>      <td class="value">{{ player.Finishing }}</td></tr>
+              <tr><td>Penalty Taking</td> <td class="value">{{ player.PenaltyTaking }}</td></tr>
+              <tr><td>Free Kick</td>      <td class="value">{{ player.FreeKickTaking }}</td></tr>
+              <tr><td>Long Shots</td>     <td class="value">{{ player.LongShots }}</td></tr>
+              <tr><td>Long Throws</td>    <td class="value">{{ player.LongThrows }}</td></tr>
+              <tr><td>Heading</td>        <td class="value">{{ player.Heading }}</td></tr>
+              <tr><td>Marking</td>        <td class="value">{{ player.Marking }}</td></tr>
+              <tr><td>Tackling</td>       <td class="value">{{ player.Trackling }}</td></tr>
+              <tr><td>Technique</td>      <td class="value">{{ player.Technique }}</td></tr>
+            </tbody>
+          </table>
+
+          <!-- MENTAL -->
+          <table class="attr-table">
+            <thead><tr><th colspan="2">MENTAL</th></tr></thead>
+            <tbody>
+              <tr><td>Aggression</td>     <td class="value">{{ player.Aggression }}</td></tr>
+              <tr><td>Anticipation</td>   <td class="value">{{ player.Anticipation }}</td></tr>
+              <tr><td>Bravery</td>        <td class="value">{{ player.Bravery }}</td></tr>
+              <tr><td>Composure</td>      <td class="value">{{ player.Composure }}</td></tr>
+              <tr><td>Concentration</td>  <td class="value">{{ player.Concentration }}</td></tr>
+              <tr><td>Decisions</td>      <td class="value">{{ player.Decisions }}</td></tr>
+              <tr><td>Determination</td>  <td class="value">{{ player.Determination }}</td></tr>
+              <tr><td>Flair</td>          <td class="value">{{ player.Flair }}</td></tr>
+              <tr><td>Leadership</td>     <td class="value">{{ player.Leadership }}</td></tr>
+              <tr><td>Off the ball</td>   <td class="value">{{ player.OffTheBall }}</td></tr>
+              <tr><td>Positioning</td>    <td class="value">{{ player.Positioning }}</td></tr>
+              <tr><td>Teamwork</td>       <td class="value">{{ player.Teamwork }}</td></tr>
+              <tr><td>Vision</td>         <td class="value">{{ player.Vision }}</td></tr>
+              <tr><td>Work Rate</td>      <td class="value">{{ player.WorkRate }}</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOTTOM: MATCH STATISTIC -->
+    <section class="card stats-card">
+      <h3 class="card-title center">MATCH STATISTIC</h3>
+      <div class="table-wrap">
+        <table class="stat-table">
+          <thead>
+            <tr>
+              <th>Match</th>
+              <th>Goals</th>
+              <th>Assists</th>
+              <th>Shot (on target)</th>
+              <th>Passes (Compl)</th>
+              <th>Saves</th>
+              <th>Fouls</th>
+              <th>Cards</th>
+              <th>Tackles</th>
+              <th>Match Rating</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for m in player.matches %}
+            {% set r = (m.MatchRating | int if m.MatchRating is not none and m.MatchRating != '' else 0) %}
+            <tr>
+              <td>{{ m.Match }}</td>
+              <td>{{ m.Goals }}</td>
+              <td>{{ m.Assists }}</td>
+              <td>{{ m.Shots }} ({{ m.OnTarget }})</td>
+              <td>{{ m.Passes }} ({{ m.Completed }})</td>
+              <td>{{ m.Saves }}</td>
+              <td>{{ m.Fouls }}</td>
+              <td>{{ m.Cards }}</td>
+              <td>{{ m.Tackles }}</td>
+              <td class="stars">{% for _ in range(r) %}★{% endfor %}{% for _ in range(5-r) %}☆{% endfor %}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Bottom links -->
+    <div class="bottom-links">
+      <a class="btn compare" href="/compare?player1={{ player.Name }}">Compare Player</a>
+      {% if prev %}<a class="btn prev" href="/player/{{ prev.Name }}">← {{ prev.Name }}</a>{% endif %}
+      {% if next %}<a class="btn next" href="/player/{{ next.Name }}">{{ next.Name }} →</a>{% endif %}
+    </div>
+
+    {% else %}
+      <p style="color:#e5e7eb">No player data available.</p>
+    {% endif %}
+  </div>
+
+  <!-- JS -->
+  <script>
+    const PLAYER_JSON = {{ player | tojson }};
+  </script>
+  <script src="/static/js/player.js"></script>
+</body>
+</html>

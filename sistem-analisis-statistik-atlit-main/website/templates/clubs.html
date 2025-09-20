@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Performance Player</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clubs.css') }}">
+</head>
+<body>
+<!-- Navbar -->
+<nav class="navbar">
+<div class="nav-container">
+    <div class="logo">
+    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <span>Fajar Febriansyah Group</span>
+    </div>
+    <ul class="nav-menu">
+    <li><a href="/">Home</a></li>
+    <li><a href="/clubs" class="active">Performance Player</a></li>
+    <li><a href="/pin_admin">Compare Player</a></li>
+    </ul>
+</div>
+</nav>
+
+<main class="main">
+<!-- Toolbar: Back -->
+<div class="toolbar">
+    <a class="back-btn" href="javascript:history.back()">
+    <span class="chev">‹</span> Back
+    </a>
+</div>
+
+<h1 class="title">Performance Player</h1>
+
+{% set q = request.args.get('q','') %}
+{# default KU = KU8 #}
+{% set ku_selected = request.args.get('ku','KU8') %}
+
+<!-- Search kiri + KU kanan -->
+<form class="search-row" action="/clubs" method="get">
+    <div class="search-input-wrap search-left">
+    <label for="search" class="ku-label">Cari</label>
+    <div class="search-inner">
+        <input type="text" id="search" name="q" placeholder="Nama klub..." value="{{ q }}">
+        <button class="search-icon-btn" type="submit" aria-label="Cari">🔍</button>
+    </div>
+    </div>
+
+    <div class="ku-select-wrap ku-right">
+    <label for="ku" class="ku-label">KU</label>
+    <select id="ku" name="ku" class="ku-select" onchange="this.form.submit()">
+        <option value="KU8"  {% if ku_selected=='KU8' %}selected{% endif %}>KU 8</option>
+        <option value="KU12" {% if ku_selected=='KU12' %}selected{% endif %}>KU 12</option>
+    </select>
+    </div>
+</form>
+
+<!-- DAFTAR KLUB -->
+<section class="club-grid">
+    {% set ql = (q or '')|lower %}
+    {% set clubs_sorted = datas.clubs|sort(attribute='Name') %}
+    {% set total = 0 %}
+    {% for c in clubs_sorted %}
+    {% set pass_q = (ql|length == 0) or (ql in (c.Name|lower)) %}
+    {% set pass_ku = (ku_selected == 'ALL') or (c.Category == ku_selected) %}
+    {% if pass_q and pass_ku %}
+        {% set _ = total.__add__(1) %}
+        {% set safe_slug = c.slug if c.slug else (c.Name|replace(' ','-')|lower) %}
+
+        <a class="club-card" href="/auth_club/{{ safe_slug }}?ku={{ ku_selected }}">
+        <img class="club-logo" src="{{ c.Logo or url_for('static', filename='Images/Logo.jpg') }}" alt="{{ c.Name }}">
+        <div class="club-meta">
+            <h3 class="club-name">{{ c.Name }}</h3>
+            <p class="club-sub">Kategori {{ c.Category }}</p>
+        </div>
+        <span class="club-chevron">›</span>
+        </a>
+    {% endif %}
+    {% endfor %}
+
+    {% if total == 0 %}
+    {% endif %}
+</section>
+</main>
+
+<script src="{{ url_for('static', filename='js/performance.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Klasemen</title>
+
+<!-- Pakai stylesheet terpisah khusus klasemen -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/klasemen.css') }}">
+</head>
+<body>
+<!-- Navbar (ikut tema kamu) -->
+<nav class="navbar">
+<div class="nav-container">
+    <div class="logo">
+    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <span>Fajar Febriansyah Group</span>
+    </div>
+    <ul class="nav-menu">
+    <li><a href="/">Home</a></li>
+    <li><a href="/clubs">Performance Player</a></li>
+    <li><a href="/pin_admin">Compare Player</a></li>
+    </ul>
+</div>
+</nav>
+
+<main class="main">
+<h1 class="title">Klasemen</h1>
+
+{# OPTIONAL: tombol back #}
+<div class="toolbar">
+    <a class="back-btn" href="javascript:history.back()"><span class="chev">‹</span> Back</a>
+</div>
+
+{# Ambil struktur data: dict -> { "KU10 GRUP A": [rows], ... } #}
+{% set grouped = datas.grouped or datas.groups or {} %}
+
+{% if grouped|length == 0 %}
+    <p class="empty-state">Belum ada data klasemen.</p>
+{% endif %}
+
+{% for group_name, rows in grouped.items() %}
+    <section class="group-card">
+    <h2 class="group-title">{{ group_name }}</h2>
+
+    <div class="table-wrap">
+        <table class="klasemen-table">
+        <thead>
+            <tr>
+            <th class="col-team">Tim</th>
+            <th title="Total Main">T</th>
+            <th title="Menang">M</th>
+            <th title="Seri">S</th>
+            <th title="Kalah">K</th>
+            <th title="Gol Masuk">GM</th>
+            <th title="Gol Kebobolan">GK</th>
+            <th title="Selisih Gol">SG</th>
+            <th class="col-poin">Poin</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in rows %}
+            <tr>
+                <td class="team-name">{{ r.Club }}</td>
+                <td>{{ r.TotalMain }}</td>
+                <td>{{ r.Menang }}</td>
+                <td>{{ r.Seri }}</td>
+                <td>{{ r.Kalah }}</td>
+                <td>{{ r.GolMasuk }}</td>
+                <td>{{ r.GolKebobolan }}</td>
+                <td class="sg">{{ r.SelisihGol }}</td>
+                <td class="poin">{{ r.Poin }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        </table>
+    </div>
+    </section>
+{% endfor %}
+</main>
+
+<!-- (opsional) JS untuk interaksi kecil -->
+<script src="{{ url_for('static', filename='js/klasemen.js') }}"></script>
+</body>
+</html>

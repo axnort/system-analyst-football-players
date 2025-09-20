@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Players — {{ club|replace('-', ' ')|title }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/players.css') }}">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+        <span>Fajar Febriansyah Group</span>
+      </div>
+      <ul class="nav-menu">
+        <li><a href="/">Home</a></li>
+        <li><a href="/clubs" class="active">Performance Player</a></li>
+        <li><a href="/pin_admin">Compare Player</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="main">
+    <!-- Toolbar Back -->
+    <div class="toolbar">
+      <a class="back-btn" href="/clubs?ku={{ ku_selected|default('KU8') }}">
+        ‹ Back
+      </a>
+    </div>
+
+    <!-- Judul Klub -->
+    {% set club_display = (datas.players[0].Club if datas.players and datas.players[0].Club else (club|replace('-',' ')|title)) %}
+    <h1 class="title">{{ club_display }}</h1>
+
+    <!-- Search pemain -->
+    {% set q = request.args.get('q','') %}
+    <form class="search-box" action="" method="get">
+      <input type="hidden" name="ku" value="{{ ku_selected|default('KU8') }}">
+      <input type="text" id="search" name="q" placeholder="Cari pemain di klub ini..." value="{{ q }}">
+      <button type="submit" id="search-button">🔍</button>
+    </form>
+
+    <!-- Grid Pemain -->
+    <div class="players-container">
+      {% set ql = (q or '')|lower %}
+      {% set shown = 0 %}
+      {% for player in datas.players %}
+        {% set name_l = (player.Name or '')|lower %}
+        {% if ql == '' or (ql in name_l) %}
+          {% set shown = shown + 1 %}
+          <div class="player-card">
+            <div class="player-photo">
+              <img src="{{ player.Photo }}" alt="{{ player.Name }}"/>
+            </div>
+            <h3 class="player-name">{{ player.Name }}</h3>
+            <p><strong>Club:</strong> {{ player.Club }}</p>
+            <p class="muted">Kategori: {{ player.Category }}</p>
+            <div class="stats">
+              <span>Goals: {{ player.Goals }}</span>
+              <span>Assists: {{ player.Assists }}</span>
+              <span>Matches: {{ player.Matches }}</span>
+            </div>
+            <a href="{{ url_for('urls.get', name=player.Name) }}" class="detail-btn">See Detail</a>
+          </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    {% if shown == 0 %}
+      <p class="empty-state">
+        Belum ada pemain{% if q %} untuk kata kunci “{{ q }}”{% endif %}.
+      </p>
+    {% endif %}
+  </main>
+
+  <script src="{{ url_for('static', filename='js/players.js') }}"></script>
+</body>
+</html>
