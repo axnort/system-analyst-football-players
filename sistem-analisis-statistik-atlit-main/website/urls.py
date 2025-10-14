@@ -2,6 +2,9 @@ from flask import Blueprint, render_template, request, redirect, url_for, abort
 from .players import BASE_DIR, PlayerRepository
 import csv
 from .klasemen import KlasemenRepository
+# paling atas urls.py, tambahkan:
+from .topskor import TopSkorRepository
+
 
 urls = Blueprint("urls", __name__)
 
@@ -184,3 +187,11 @@ def page_klasemen():
     ku = request.args.get("category")  # mis: KU10 (opsional)
     grouped = KlasemenRepository.grouped(ku)  # dict: {"KU10 GRUP A": [KlasemenRow,...], ...}
     return render_template("klasemen.html", datas={"grouped": grouped}, category=ku)
+
+# ========= Top Skor =========
+@urls.route("/topskor")
+def page_top_skor():
+    kus = TopSkorRepository.categories()
+    ku  = request.args.get("ku") or ("KU8" if "KU8" in kus else kus[0])
+    rows = TopSkorRepository.by_category_aggregated(ku)
+    return render_template("topskor.html", ku=ku, kus=kus, rows=rows)

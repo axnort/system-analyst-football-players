@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Top Skor</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/topskor.css') }}">
+</head>
+<body>
+<!-- NAVBAR -->
+<nav class="navbar">
+<div class="nav-container">
+    <div class="logo">
+    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo" />
+    <span>Superstar Fest</span>
+    </div>
+
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+    <ul id="main-menu" class="nav-menu">
+    <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
+    <li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
+    <li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
+    <li><a href="{{ url_for('urls.clubs') }}" class="{{ 'active' if request.path.startswith('/clubs') else '' }}">Performance Player</a></li>
+    <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
+    </ul>
+</div>
+</nav>
+
+<main class="main">
+<div class="toolbar">
+    <a class="back-btn" href="javascript:history.back()"><span class="chev">‹</span> Back</a>
+</div>
+
+<h1 class="title">Top Skor</h1>
+
+<!-- Filter KU -->
+<div class="filterbar">
+    <div class="filter-item">
+    <label for="kuSel">KU</label>
+    <select id="kuSel" class="select">
+        {% for k in kus %}
+        <option value="{{ k }}" {{ 'selected' if k == ku else '' }}>{{ k.replace('KU','KU ') }}</option>
+        {% endfor %}
+    </select>
+    </div>
+</div>
+
+<!-- Table -->
+<div class="table-wrap outline-rows">
+    <table class="table simple">
+    <thead>
+        <tr>
+        <th class="th-player">Pemain</th>
+        <th class="th-skor">Skor</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% if rows and rows|length > 0 %}
+        {% for r in rows %}
+            <tr>
+            <td class="player-cell">
+                <img class="avatar-img"
+                    src="{{ r.Photo }}"
+                    referrerpolicy="no-referrer"
+                    alt="{{ r.Name }}"
+                    onerror="this.onerror=null;this.src='{{ url_for('static', filename='Images/avatar-default.png') }}'">
+                <span class="player-name">{{ r.Name }}</span>
+            </td>
+            <td class="score">{{ r.Score }}</td>
+            </tr>
+        {% endfor %}
+        {% else %}
+        <tr><td colspan="2" class="empty">Belum ada data untuk {{ ku }}.</td></tr>
+        {% endif %}
+    </tbody>
+    </table>
+</div>
+</main>
+
+<script src="{{ url_for('static', filename='js/topskor.js') }}"></script>
+</body>
+</html>

@@ -1,113 +1,251 @@
-/* ===== Base ===== */
-:root{
---bg:#0f172a;
---panel:#1e293b;
---text:#ffffff;
---muted:#94a3b8;
---brand:#22c55e;
---brand-900:#16a34a;
---ink:#0b132b;
---ring:rgba(255,255,255,.15);
+/* ===== THEME ===== */
+:root {
+--bg: #0b1020;
+--ink: #0b132b;
+--panel: #0f172a;
+--panel-2: #0b1220;
+--text: #e8f5ef;
+--muted: #94a3b8;
+--brand: #22c55e;
+--brand-dark: #16a34a;
+--line: rgba(255,255,255,.18);
+--line-soft: rgba(255,255,255,.10);
+--search-h: 48px;
+--btn-w: 44px;
 }
 
-*{box-sizing:border-box}
-html,body{height:100%}
-body{
-margin:0;
-font-family: Arial, sans-serif;
+/* ===== RESET ===== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 background: var(--bg);
 color: var(--text);
+scroll-behavior: smooth;
 }
 
-/* ===== Navbar ===== */
-.navbar{
-background: var(--ink);
+/* ===== NAVBAR (identik dengan clubs.css) ===== */
+.navbar {
+background: #0f172a;
+padding: 20px 56px;
 border-bottom: 2px solid var(--brand);
-padding: 12px 20px;
+position: sticky;
+top: 0;
+z-index: 1000;
+box-shadow: 0 4px 18px rgba(0,0,0,.25);
 }
-.nav-container{
-max-width: 1100px;
+.nav-container {
+max-width: 1560px;
 margin: 0 auto;
-display:flex; align-items:center; justify-content:space-between;
+padding: 0 40px;
+display: flex;
+align-items: center;
+justify-content: space-between;
 }
-.logo{display:flex; align-items:center; gap:8px;}
-.logo img{width:36px; height:36px; border-radius:50%;}
-.logo span{font-weight:700; color:var(--brand);}
-.nav-menu{list-style:none; display:flex; gap:20px; margin:0; padding:0;}
-.nav-menu a{
-color:var(--text); text-decoration:none; font-weight:500;
-padding:6px 12px; border-radius:6px;
+.logo {
+display: flex;
+align-items: center;
+gap: 10px;
 }
-.nav-menu a.active, .nav-menu a:hover{
-background:var(--brand); color:var(--ink);
+.logo img {
+width: 40px;
+height: 40px;
+border-radius: 50%;
 }
-
-/* ===== Toolbar Back ===== */
-.toolbar{
-max-width:1100px; margin:16px auto 0; padding:0 20px;
+.logo span {
+font-weight: 700;
+color: var(--brand);
+font-size: 18px;
 }
-.back-btn{
-display:inline-block; padding:8px 14px; border-radius:999px;
-background:var(--panel); color:var(--text); text-decoration:none;
-border:1px solid var(--ring); font-weight:600;
+.hamburger {
+display: none;
+font-size: 28px;
+background: none;
+border: none;
+color: #fff;
+cursor: pointer;
 }
-.back-btn:hover{ background:var(--brand); color:var(--ink); }
-
-/* ===== Title ===== */
-.title{
-text-align:center; margin:20px 0 16px; color:var(--brand); font-size:32px;
+.nav-menu {
+list-style: none;
+display: flex;
+align-items: center;
+gap: 18px;
 }
-
-/* ===== Search (center, pill) ===== */
-.search-box{
-display:flex; justify-content:center; align-items:center;
-margin-bottom: 10px;
+.nav-menu a {
+color: #fff;
+text-decoration: none;
+font-weight: 600;
+padding: 6px 10px;
+border-radius: 6px;
+transition: color .2s ease;
 }
-.search-box input{
-width:540px; max-width:90vw;
-padding:10px 14px; border-radius:30px; border:none;
-background:var(--panel); color:var(--text); font-size:14px;
-outline:none;
-}
-.search-box input::placeholder{ color: var(--muted); }
-.search-box button{
-margin-left:-40px; background:none; border:none; cursor:pointer;
-font-size:16px; color:var(--brand);
-}
-
-/* ===== Grid Cards ===== */
-.players-container{
-display:grid; grid-template-columns:repeat(auto-fill, minmax(240px,1fr));
-gap:24px; max-width:1100px; margin:0 auto; padding:20px;
-}
-.player-card{
-background:var(--panel); border-radius:12px; padding:20px; text-align:center;
-box-shadow:0 6px 18px rgba(0,0,0,.25);
-transition:transform .2s ease;
-}
-.player-card:hover{ transform:translateY(-4px); }
-.player-photo img{
-width:100px; height:100px; border-radius:50%;
-border:3px solid var(--brand); object-fit:cover;
-}
-.player-name{ margin:12px 0 8px; color:var(--brand); font-weight:700; }
-.muted{ color:var(--muted); font-size:13px; }
-
-.stats{
-display:grid; grid-template-columns:1fr 1fr; gap:6px; margin:12px 0;
-}
-.stats span{
-display:block; background:var(--bg); border-radius:6px;
-padding:6px; font-size:13px;
+.nav-menu a.active,
+.nav-menu a:hover {
+color: var(--brand);
 }
 
-/* CTA */
-.detail-btn{
-display:inline-block; margin-top:12px; padding:8px 14px; border-radius:8px;
-background:var(--brand); color:var(--ink); text-decoration:none; font-weight:bold;
-transition:background .2s, transform .2s;
+/* ===== MAIN ===== */
+.main {
+max-width: 1100px;
+margin: 20px auto 60px;
+padding: 0 20px;
 }
-.detail-btn:hover{ background:var(--brand-900); transform:translateY(-2px); }
 
-/* ===== Hide any leftover "empty-state" text if template masih punya ===== */
-.empty-state{ display:none !important; }
+/* ===== HEADER BAR (BACK) ===== */
+.header-bar {
+display: flex;
+justify-content: flex-start;
+margin: 8px 0 16px;
+}
+.back-btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 8px 16px;
+border-radius: 12px;
+background: #1e293b;
+color: #fff;
+text-decoration: none;
+border: 1px solid var(--line);
+font-weight: 600;
+font-size: 14px;
+transition: all 0.2s ease;
+}
+.back-btn:hover {
+background: var(--brand);
+color: var(--ink);
+border-color: transparent;
+}
+.back-btn .chev { font-size: 16px; }
+
+/* ===== TITLE ===== */
+.title {
+text-align: center;
+color: var(--brand);
+font-size: 32px;
+margin: 12px 0 20px;
+}
+
+/* ===== SEARCH ===== */
+.search-form {
+display: flex;
+justify-content: center;
+margin-bottom: 22px;
+}
+.search-pill {
+position: relative;
+display: flex;
+align-items: center;
+height: var(--search-h);
+width: min(560px, 100%);
+background: var(--panel);
+border: 1px solid var(--line-soft);
+border-radius: 999px;
+padding-left: 12px;
+box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+.search-pill input {
+flex: 1;
+border: none;
+background: transparent;
+color: var(--text);
+font-size: 15px;
+padding: 0 calc(var(--btn-w) + 10px) 0 6px;
+outline: none;
+}
+.search-pill input::placeholder { color: var(--muted); }
+.search-icon-btn {
+position: absolute;
+right: 6px;
+top: 50%;
+transform: translateY(-50%);
+width: var(--btn-w);
+height: var(--btn-w);
+border: none;
+border-radius: 50%;
+background: var(--brand);
+color: var(--ink);
+font-size: 18px;
+display: flex;
+align-items: center;
+justify-content: center;
+cursor: pointer;
+}
+.search-icon-btn:hover { background: var(--brand-dark); }
+
+/* ===== PLAYER CARDS ===== */
+.players-container {
+display: grid;
+grid-template-columns: repeat(auto-fill,minmax(240px,1fr));
+gap: 22px;
+margin-top: 8px;
+}
+.player-card {
+background: var(--panel);
+border: 1px solid var(--line-soft);
+border-radius: 12px;
+padding: 18px;
+text-align: center;
+box-shadow: 0 6px 18px rgba(0,0,0,.22);
+transition: transform .2s;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+.player-card:hover { transform: translateY(-3px); }
+.player-photo img {
+width: 90px;
+height: 90px;
+border-radius: 50%;
+border: 3px solid var(--brand);
+object-fit: cover;
+}
+.player-name { color: var(--brand); margin: 10px 0 6px; font-weight: 700; }
+.muted { color: var(--muted); font-size: 13px; }
+.stats {
+display: grid;
+grid-template-columns: 1fr 1fr;
+gap: 6px;
+margin: 10px 0;
+}
+.stats span {
+background: #0b1220;
+border-radius: 6px;
+padding: 6px 8px;
+font-size: 13px;
+}
+.detail-btn {
+display: inline-block;
+margin-top: 8px;
+padding: 8px 12px;
+border-radius: 8px;
+background: var(--brand);
+color: var(--ink);
+text-decoration: none;
+font-weight: 700;
+}
+.detail-btn:hover { background: var(--brand-dark); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+.navbar { padding: 16px 20px; }
+.hamburger { display: block; }
+.nav-menu {
+display: none;
+position: absolute;
+right: 20px;
+top: calc(100% + 8px);
+flex-direction: column;
+gap: 12px;
+background: var(--ink);
+padding: 12px;
+border: 1px solid var(--line);
+border-radius: 10px;
+width: min(86vw,320px);
+box-shadow: 0 12px 30px rgba(0,0,0,.35);
+}
+.nav-menu.active { display: flex; }
+
+.title { font-size: 26px; margin-top: 28px; }
+.players-container { grid-template-columns: 1fr; gap: 18px; }
+.search-pill { width: min(92vw,520px); height: 46px; }
+}

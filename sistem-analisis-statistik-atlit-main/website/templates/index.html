@@ -14,12 +14,17 @@
         <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
         <span>Superstar Fest</span>
       </div>
-      <ul class="nav-menu">
-        <li><a href="/" class="active">Home</a></li>
-        <li><a href="/klasemen">Klasemen</a></li>
-        <li><a href="/topskor">Top Skor</a></li>
-        <li><a href="/clubs">Performance Player</a></li>
-        <li><a href="/pin_admin">Compare Player</a></li>
+
+      <!-- Hamburger (mobile) -->
+      <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+      <!-- Menu -->
+      <ul id="main-menu" class="nav-menu">
+      <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
+      <li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
+      <li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
+      <li><a href="{{ url_for('urls.clubs') }}" class="{{ 'active' if request.path.startswith('/clubs') else '' }}">Performance Player</a></li>
+      <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
       </ul>
     </div>
   </nav>
@@ -40,6 +45,8 @@
         <a href="https://drive.google.com/your-test-link" target="_blank" class="btn orange">Test Results</a>
       </div>
     </div>
+
+    <!-- Slideshow -->
     <div class="slideshow">
       <img src="https://images.unsplash.com/photo-1553778263-73a83bab9b0c?auto=format&fit=crop&w=1500&q=80" class="active" alt="">
       <img src="{{ url_for('static', filename='Images/Lapangan.jpg') }}" alt="">

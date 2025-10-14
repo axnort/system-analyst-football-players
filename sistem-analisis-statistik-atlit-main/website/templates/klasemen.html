@@ -4,63 +4,90 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Klasemen</title>
-
-<!-- Pakai stylesheet terpisah khusus klasemen -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/klasemen.css') }}">
 </head>
 <body>
-<!-- Navbar (ikut tema kamu) -->
+<!-- Navbar (match index) -->
 <nav class="navbar">
 <div class="nav-container">
     <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
-    <span>Fajar Febriansyah Group</span>
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
+    <span>Superstar Fest</span>
     </div>
-    <ul class="nav-menu">
-    <li><a href="/">Home</a></li>
-    <li><a href="/clubs">Performance Player</a></li>
-    <li><a href="/pin_admin">Compare Player</a></li>
+
+    <!-- Hamburger (mobile) -->
+    <button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+    <!-- Menu -->
+    <ul id="main-menu" class="nav-menu">
+    <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
+    <li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
+    <li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
+    <li><a href="{{ url_for('urls.clubs') }}" class="{{ 'active' if request.path.startswith('/clubs') else '' }}">Performance Player</a></li>
+    <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
     </ul>
 </div>
 </nav>
 
 <main class="main">
-<h1 class="title">Klasemen</h1>
-
-{# OPTIONAL: tombol back #}
+<!-- Back di atas judul -->
 <div class="toolbar">
     <a class="back-btn" href="javascript:history.back()"><span class="chev">‹</span> Back</a>
 </div>
 
-{# Ambil struktur data: dict -> { "KU10 GRUP A": [rows], ... } #}
-{% set grouped = datas.grouped or datas.groups or {} %}
+<!-- Judul tengah -->
+<h1 class="title">Klasemen</h1>
 
-{% if grouped|length == 0 %}
-    <p class="empty-state">Belum ada data klasemen.</p>
-{% endif %}
+<!-- Filter KU + Tabs -->
+{% set current_ku = request.args.get('ku','KU8') %}
+{% set active_tab  = request.args.get('tab','group') %}
 
-{% for group_name, rows in grouped.items() %}
-    <section class="group-card">
-    <h2 class="group-title">{{ group_name }}</h2>
+<div class="filterbar">
+    <div class="filter-item">
+    <label for="kuSel">KU</label>
+    <select id="kuSel" class="select">
+        <option value="KU8"  {{ 'selected' if current_ku=='KU8' else '' }}>KU 8</option>
+        <option value="KU12" {{ 'selected' if current_ku=='KU12' else '' }}>KU 12</option>
+    </select>
+    </div>
 
-    <div class="table-wrap">
-        <table class="klasemen-table">
-        <thead>
-            <tr>
-            <th class="col-team">Tim</th>
-            <th title="Total Main">T</th>
-            <th title="Menang">M</th>
-            <th title="Seri">S</th>
-            <th title="Kalah">K</th>
-            <th title="Gol Masuk">GM</th>
-            <th title="Gol Kebobolan">GK</th>
-            <th title="Selisih Gol">SG</th>
-            <th class="col-poin">Poin</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in rows %}
-            <tr>
+    <div class="tabs">
+    <button class="tab {{ 'active' if active_tab=='group' else '' }}" type="button" data-tab="group">Babak Grup</button>
+    <button class="tab {{ 'active' if active_tab=='knockout' else '' }}" type="button" data-tab="knockout">Knockout</button>
+    </div>
+</div>
+
+<!-- Babak Grup (hanya KU terpilih) -->
+<section id="section-group" class="{{ '' if active_tab=='group' else 'hidden' }}">
+    {% set grouped = datas.grouped or datas.groups or {} %}
+    {% set rendered = 0 %}
+    {% for group_name, rows in grouped.items() %}
+    {% if current_ku in group_name %}
+        {% set rendered = rendered + 1 %}
+        <section class="group-card">
+        {% set pretty_group =
+        ('KU ' ~ group_name[2:]) if (group_name[:2] == 'KU' and group_name[2:3] in '0123456789')
+        else group_name
+        %}
+        <h2 class="group-title">{{ pretty_group }}</h2>
+        <div class="table-wrap">
+            <table class="klasemen-table">
+            <thead>
+                <tr>
+                <th class="col-team">Tim</th>
+                <th title="Total Main">T</th>
+                <th title="Menang">M</th>
+                <th title="Seri">S</th>
+                <th title="Kalah">K</th>
+                <th title="Gol Masuk">GM</th>
+                <th title="Gol Kebobolan">GK</th>
+                <th title="Selisih Gol">SG</th>
+                <th class="col-poin">Poin</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in rows %}
+                <tr>
                 <td class="team-name">{{ r.Club }}</td>
                 <td>{{ r.TotalMain }}</td>
                 <td>{{ r.Menang }}</td>
@@ -70,16 +97,61 @@
                 <td>{{ r.GolKebobolan }}</td>
                 <td class="sg">{{ r.SelisihGol }}</td>
                 <td class="poin">{{ r.Poin }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-        </table>
+                </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        </div>
+        </section>
+    {% endif %}
+    {% endfor %}
+
+    {% if rendered == 0 %}
+    <p class="empty-state">Belum ada data klasemen untuk {{ current_ku }}.</p>
+    {% endif %}
+</section>
+
+<!-- Knockout (satu gambar) -->
+<section id="section-knockout" class="{{ '' if active_tab=='knockout' else 'hidden' }}">
+    <section class="group-card">
+    <h2 class="group-title">Bagan Knockout {{ current_ku }}</h2>
+    <div class="table-wrap" style="padding:12px">
+        <figure class="imgframe" style="margin:0">
+        <img id="img-bracket" src="" alt="Bagan Knockout {{ current_ku }}" loading="lazy"
+                style="width:100%;height:auto;border:1px dashed var(--line);border-radius:12px;background:rgba(255,255,255,.02)">
+        <figcaption class="muted" style="margin-top:6px;color:var(--muted)">Tap/klik untuk perbesar</figcaption>
+        </figure>
     </div>
     </section>
-{% endfor %}
+</section>
 </main>
 
-<!-- (opsional) JS untuk interaksi kecil -->
-<script src="{{ url_for('static', filename='js/klasemen.js') }}"></script>
+<!-- Lightbox -->
+<div id="lightbox" class="lightbox" aria-hidden="true">
+<button class="lightbox-close" aria-label="Tutup">×</button>
+<img id="lightbox-img" src="" alt="">
+<div id="lightbox-cap" class="lightbox-cap"></div>
+</div>
+
+<!-- Pakai JS kamu yang sudah ada -->
+<script>
+const burger = document.querySelector(".hamburger");
+const menu   = document.querySelector(".nav-menu");
+
+if (burger && menu) {
+burger.addEventListener("click", () => {
+const isOpen = menu.classList.toggle("active");
+burger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+// Tutup menu saat klik di luar area
+document.addEventListener("click", (e) => {
+if (!menu.contains(e.target) && !burger.contains(e.target)) {
+    menu.classList.remove("active");
+    burger.setAttribute("aria-expanded", "false");
+}
+});
+}
+</script>
 </body>
 </html>

@@ -24,6 +24,7 @@ class Player:
     Aerial: int
     Technical: int
     Club: str
+    LogoClub: str
     Position: str
     DateOfBirth: str
     Height: int
@@ -134,7 +135,8 @@ class PlayerRepository:
                     Aerial=to_int(row.get("Aerial", 0)),
                     Technical=to_int(row.get("Technical", 0)),
                     Club=row.get("Club", ""),
-                    Position=row.get("Position", ""),
+                    LogoClub=row.get("LogoClub", ""),
+                    Position=to_int(row.get("Position", 0)),
                     DateOfBirth=row.get("DateOfBirth", ""),
                     Height=to_int(row.get("Height", 0)),
                     Weight=to_int(row.get("Weight", 0)),
@@ -296,7 +298,7 @@ class PlayerRepository:
                 clubs[key] = {
                     "Name": p.Club.strip(),
                     "Category": p.Category.strip(),
-                    "Logo": p.Photo or "",
+                    "Logo": p.LogoClub or "",
                     "slug": p.Club.strip().lower().replace(" ", "-"),
                 }
         return list(clubs.values())

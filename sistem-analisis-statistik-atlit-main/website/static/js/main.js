@@ -1,14 +1,30 @@
-// Slideshow auto-rotate
-const slides = document.querySelectorAll('.slideshow img');
-let idx = 0;
+// === Toggle hamburger menu ===
+const burger = document.querySelector(".hamburger");
+const menu   = document.querySelector(".nav-menu");
 
-function showSlide(n) {
-slides.forEach((s, i) => s.classList.toggle('active', i === n));
+if (burger && menu) {
+burger.addEventListener("click", () => {
+const isOpen = menu.classList.toggle("active");
+burger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+// tutup menu ketika klik di luar
+document.addEventListener("click", (e) => {
+if (!menu.contains(e.target) && !burger.contains(e.target)) {
+    menu.classList.remove("active");
+    burger.setAttribute("aria-expanded", "false");
 }
-if (slides.length > 0) {
-showSlide(idx);
+});
+}
+
+// === Simple slideshow rotator (opsional) ===
+(function rotateSlides(){
+const slides = document.querySelectorAll(".slideshow img");
+if (!slides.length) return;
+let i = 0;
 setInterval(() => {
-idx = (idx + 1) % slides.length;
-showSlide(idx);
+slides[i].classList.remove("active");
+i = (i + 1) % slides.length;
+slides[i].classList.add("active");
 }, 5000);
-}
+})();

@@ -2,108 +2,145 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>PIN Authentication</title>
+
+<!-- Pakai CSS navbar & layout global milik halaman clubs -->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/clubs.css') }}">
+<!-- CSS khusus komponen kartu PIN (halaman ini) -->
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_pin.css') }}">
 </head>
 <body>
-<!-- Navbar -->
+
+<!-- ===== NAVBAR (identik dengan halaman clubs) ===== -->
 <nav class="navbar">
-<div class="nav-inner">
-    <a href="/" class="brand">
-    <span class="brand-dot"></span>
-    <span>Fajar Febriansyah Group</span>
+<div class="nav-container">
+<div class="logo">
+    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <span>Superstar Fest</span>
+</div>
+
+<!-- Hamburger (mobile) -->
+<button class="hamburger" aria-label="Toggle menu" aria-expanded="false" aria-controls="main-menu">☰</button>
+
+<!-- Menu lengkap -->
+<ul id="main-menu" class="nav-menu">
+    <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Home</a></li>
+    <li><a href="/klasemen" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
+    <li>
+    <a href="{{ url_for('urls.page_top_skor') }}"
+        class="{{ 'active' if request.path.startswith('/top_skor') else '' }}">
+        Top Skor
     </a>
-    <div class="nav-links">
-    <a href="/">Home</a>
-    <a href="/clubs">Performance Player</a>
-    <a href="/pin_admin">Compare</a>
-    </div>
+    </li>
+
+    {# === Penting: Performance Player aktif untuk alur PIN/Club/Player === #}
+    <li>
+    <a href="/clubs"
+        class="{% if request.path.startswith('/clubs')
+                or request.path.startswith('/auth_club')
+                or request.path.startswith('/auth_pin')
+                or request.path.startswith('/players') %}active{% endif %}">
+        Performance Player
+    </a>
+    </li>
+
+    <li>
+    <a href="/pin_admin"
+        class="{{ 'active' if request.path == '/pin_admin' else '' }}">
+        Compare Player
+    </a>
+    </li>
+</ul>
 </div>
 </nav>
 
-<main class="wrap">
+<!-- ===== MAIN ===== -->
+<main class="main">
+<!-- Toolbar Back (opsional tapi konsisten) -->
+<div class="toolbar">
+<a class="back-btn" href="javascript:history.back()">
+    <span class="chev">‹</span> Back
+</a>
+</div>
+
+<!-- Kartu PIN -->
 <section class="card">
-    <header class="card-header">
+<header class="card-header">
     <span class="logo-dot"></span>
     <h1 class="title">PIN Authentication</h1>
-    </header>
+</header>
 
-    <div class="card-body">
+<div class="card-body">
     {% if message %}
-        <p class="alert">{{ message }}</p>
+    <p class="alert">{{ message }}</p>
     {% endif %}
 
     {# ==== MODE KLUB (auth_club) ==== #}
     {% if club_slug %}
-        <form method="post" action="{{ url_for('urls.auth_club', slug=club_slug, ku=ku) }}">
+    <form method="post" action="{{ url_for('urls.auth_club', slug=club_slug, ku=ku) }}">
         <div class="form-row">
-            <label>Club</label>
-            <input type="text" class="input readonly"
-                    value="{{ club_slug.replace('-', ' ')|title }}" readonly>
+        <label>Club</label>
+        <input type="text" class="input readonly"
+                value="{{ club_slug.replace('-', ' ')|title }}" readonly>
         </div>
 
         <div class="form-row">
-            <label>PIN</label>
-            <div class="pin-wrap">
+        <label>PIN</label>
+        <div class="pin-wrap">
             <input type="password" name="pin" class="input" id="pinField"
                     placeholder="Masukkan PIN" autocomplete="current-password" required>
-            <button class="toggle" type="button" id="pinToggle" title="Show/Hide PIN" aria-label="Show/Hide PIN">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
-                </svg>
-            </button>
-            </div>
+            <button class="toggle" type="button" id="pinToggle"
+                    title="Show/Hide PIN" aria-label="Show/Hide PIN">👁</button>
+        </div>
         </div>
 
         <div class="actions">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{{ url_for('urls.clubs', ku=ku or 'KU8') }}" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ url_for('urls.clubs', ku=ku or 'KU8') }}" class="btn btn-ghost">Cancel</a>
         </div>
-        </form>
+    </form>
 
     {# ==== MODE PLAYER (lama) ==== #}
     {% elif player %}
-        <form method="post" action="{{ url_for('urls.auth_check', name=player.Name) }}">
+    <form method="post" action="{{ url_for('urls.auth_check', name=player.Name) }}">
         <div class="form-row">
-            <label>Player</label>
-            <input type="text" class="input readonly" value="{{ player.Name }}" readonly>
+        <label>Player</label>
+        <input type="text" class="input readonly" value="{{ player.Name }}" readonly>
         </div>
 
         <div class="form-row">
-            <label>Club</label>
-            <input type="text" name="club" class="input readonly" value="{{ player.Club }}" readonly>
+        <label>Club</label>
+        <input type="text" name="club" class="input readonly" value="{{ player.Club }}" readonly>
         </div>
 
         <div class="form-row">
-            <label>PIN</label>
-            <div class="pin-wrap">
+        <label>PIN</label>
+        <div class="pin-wrap">
             <input type="password" name="pin" class="input" id="pinField"
                     placeholder="Masukkan PIN" autocomplete="current-password" required>
-            <button class="toggle" type="button" id="pinToggle" title="Show/Hide PIN" aria-label="Show/Hide PIN">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 5c-7 0-11 7-11 7s4 7 11 7 11-7 11-7-4-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10z"/>
-                </svg>
-            </button>
-            </div>
+            <button class="toggle" type="button" id="pinToggle"
+                    title="Show/Hide PIN" aria-label="Show/Hide PIN">👁</button>
+        </div>
         </div>
 
         <div class="actions">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-ghost">Cancel</a>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-ghost">Cancel</a>
         </div>
-        </form>
+    </form>
 
     {% else %}
-        <p class="alert">Context tidak tersedia. Buka halaman ini dari daftar klub atau detail pemain.</p>
-        <div class="actions">
+    <p class="alert">Context tidak tersedia. Buka halaman ini dari daftar klub atau detail pemain.</p>
+    <div class="actions">
         <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-primary">Kembali ke Daftar Klub</a>
-        </div>
-    {% endif %}
     </div>
+    {% endif %}
+</div>
 </section>
 </main>
 
+<!-- JS kecil: hamburger + toggle PIN -->
 <script src="{{ url_for('static', filename='js/auth_pin.js') }}"></script>
 </body>
 </html>

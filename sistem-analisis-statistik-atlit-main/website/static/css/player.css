@@ -1,47 +1,148 @@
-/* Layout dasar */
+/* ===================== THEME TOKENS (match referensi) ===================== */
 :root{
---bg:#0f172a;
---card:#0b1f36;
+/* palet inti */
+--bg:#0b1020;              /* latar halaman navy gelap */
+--ink:#0b132b;             /* navbar background */
+--brand:#22c55e;           /* aksen hijau */
+
+/* panel/kartu & garis */
+--card:#121e30;            /* kartu umum biru tua */
+--panel-2:#0f1a2b;         /* header tabel / elemen lebih gelap */
+--panel-3:#0d1828;         /* zebra row */
 --stroke:#2b3b52;
+--line:rgba(255,255,255,.08);
+
+/* teks */
 --text:#e5e7eb;
 --muted:#9fb3c8;
---brand:#10b981;
+
+/* layout */
+--content-max: 1200px;
+--gutter: 20px;
 }
+
+/* ===================== BASE ===================== */
 *{box-sizing:border-box}
 body{
 margin:0;
 font-family:"Segoe UI",Arial,sans-serif;
-background: linear-gradient(135deg, #0f172a, #1e293b 45%, #334155);
+background: var(--bg);       /* solid, bukan gradient */
 color:var(--text);
 }
 
-/* Navbar */
+/* ===================== NAVBAR ===================== */
 .navbar{
-display:flex; align-items:center; gap:16px;
-background:#0f172a; padding:12px 20px;
+position:sticky; top:0; z-index:1000;
+background:var(--ink);
 border-bottom:2px solid var(--brand);
+padding:20px 56px;
+box-shadow:0 4px 18px rgba(0,0,0,.25);
 }
-.navbar a{
-color:var(--text); text-decoration:none;
-padding:6px 12px; border-radius:8px; transition:.25s;
+.nav-container{
+max-width:1560px; margin:0 auto; padding:0 40px;
+display:flex; align-items:center; justify-content:space-between;
 }
-.navbar a:hover{ background:var(--brand); color:#0f172a; }
+.logo{ display:flex; align-items:center; gap:10px }
+.logo img{ width:40px; height:40px; border-radius:50% }
+.logo span{ font-weight:700; color:var(--brand); font-size:18px }
 
-.container{ max-width:1200px; margin:32px auto; padding:0 16px; }
-
-.back-btn{
-display:inline-block; background:var(--brand); color:#042;
-color:#fff; padding:10px 18px; border-radius:24px;
-font-weight:700; text-decoration:none; margin-bottom:16px;
+.hamburger{
+display:none; font-size:28px; line-height:1;
+background:none; border:none; color:#fff; cursor:pointer;
+padding:6px 8px; border-radius:6px;
 }
-.back-btn:hover{ filter:brightness(.95); }
+.hamburger:focus{ outline:2px solid var(--brand); outline-offset:2px }
 
-/* Cards & grid */
+.nav-menu{ list-style:none; display:flex; gap:15px; margin:0; padding:0 }
+.nav-menu li{ display:flex; align-items:center }
+.nav-menu a{
+color:var(--text); text-decoration:none; font-weight:600;
+padding:6px 10px; border-radius:6px; line-height:1;
+transition:color .2s ease;
+}
+.nav-menu a.active, .nav-menu a:hover{ color:var(--brand) }
+
+@media (max-width:768px){
+.navbar{ padding:16px 20px }
+.nav-container{ padding:0 20px }
+.hamburger{ display:block }
+.nav-menu{
+display:none; position:absolute; right:20px; top:calc(100% + 8px);
+flex-direction:column; gap:14px; background:var(--ink);
+padding:16px; border:1px solid rgba(255,255,255,.08);
+border-radius:10px; width:min(85vw,320px);
+box-shadow:0 12px 30px rgba(0,0,0,.35);
+}
+.nav-menu.active{ display:flex }
+}
+
+/* ===================== WRAP Back + Title + Konten ===================== */
+.page-wrap{
+max-width: var(--content-max);
+margin: 16px auto 32px;
+padding: 0 var(--gutter);
+}
+
+/* Back button (lurus kiri) */
+.toolbar{ display:flex; justify-content:flex-start; margin: 0 0 10px 0; padding:0; }
+
+/* Tombol Back - versi seperti di halaman Klasemen */
+.back-btn {
+display: inline-flex;
+align-items: center;
+gap: 6px;
+padding: 10px 18px;
+font-size: 15px;
+font-weight: 700;
+text-decoration: none;
+
+/* Warna & gaya sama dengan tema klasemen */
+color: #e2e8f0;
+background: linear-gradient(145deg, #0f172a, #141d2e);
+border: 1.5px solid rgba(255, 255, 255, 0.06);
+border-radius: 12px;
+
+box-shadow:
+0 3px 6px rgba(0, 0, 0, 0.4),
+inset 0 1px 0 rgba(255, 255, 255, 0.04);
+transition: all 0.25s ease;
+}
+
+.back-btn:hover {
+background: linear-gradient(145deg, #1e293b, #182336);
+color: #22c55e;
+border-color: rgba(255, 255, 255, 0.12);
+box-shadow:
+0 4px 10px rgba(0, 0, 0, 0.45),
+inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.chev {
+font-size: 18px;
+line-height: 1;
+}
+
+
+
+/* Judul utama */
+.page-title {
+margin: 16px 0 32px;  /* beri ruang lebih ke bawah */
+text-align: center;
+color: var(--brand);   /* hijau khas */
+font-weight: 800;      /* sedikit lebih ringan dari 900 biar mirip Klasemen */
+letter-spacing: 0.02em;
+font-size: clamp(26px, 3vw, 36px);
+line-height: 1.2;
+}
+
+/* ===================== KONTEN UMUM ===================== */
+.container{ max-width: 100%; margin: 0; padding: 0; }
+
 .card{
-background: rgba(11,31,54,.9);
-border:1px solid var(--stroke);
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,.35);
+background: var(--card);
+border:1px solid var(--line);
+border-radius:16px;
+box-shadow:0 10px 28px rgba(0,0,0,.28);
 }
 .card-title{
 margin:0 0 10px 0; padding:10px 14px;
@@ -49,6 +150,7 @@ font-weight:800; letter-spacing:.06em; color:#dbeafe;
 }
 .card-title.center{ text-align:center; }
 
+/* ===================== Player – Info & Attribute ===================== */
 .top-grid{
 display:grid; gap:22px; grid-template-columns: 1.1fr 1.9fr;
 }
@@ -64,53 +166,132 @@ border:3px solid #1f3b5b;
 .info-list span{ color:var(--muted); }
 
 .radar-wrap{
-margin-top:12px; background:var(--card);
-border-radius:10px; padding:8px; height:270px;
+margin-top:12px; background:var(--panel-2);
+border-radius:12px; padding:8px; height:320px;
 }
 
-/* Attributes */
+/* ===================== ATTRIBUTE TABLE (outline tebal) ===================== */
 .attr-grid{
-display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
 }
+
+/* Tabel jelas terpisah dari background */
 .attr-table{
-width:100%; border-collapse:collapse; background:#102742; border-radius:10px; overflow:hidden;
+border-collapse: separate;
+border-spacing: 0;
+background: #0f1a2b;                 /* sedikit lebih gelap dari kartu */
+border-radius: 14px;
+overflow: hidden;
+
+/* outline & depth — DITEBALIN (±2px) */
+border: 2px solid rgba(148,163,184,.22);      /* ring utama */
+box-shadow:
+0 0 0 1.5px rgba(6,15,30,.70),              /* outer dark ring */
+inset 0 1px 0 rgba(255,255,255,.06),        /* inner hairline */
+0 10px 26px rgba(0,0,0,.36);                /* drop shadow */
 }
+
+/* Header kontras */
 .attr-table thead th{
-background:#0b1f36; color:#e5e7eb; padding:10px; text-align:center;
+background:#0e2137;
+color:#cfe3ff;
+letter-spacing:.06em;
+font-weight:800;
+padding:12px 10px;
+text-align:center;
+border-bottom:1px solid rgba(255,255,255,.10);
 }
+
+/* Zebra + hover + garis antar sel */
+.attr-table tbody tr:nth-child(odd)  td{ background:#0c1a2f; }
+.attr-table tbody tr:nth-child(even) td{ background:#0f2238; }
+.attr-table tbody tr:hover td{ background:#14243a; }
 .attr-table td{
-padding:8px 10px; border-bottom:1px solid var(--stroke); font-size:.95rem;
+padding:10px 12px;
+border-bottom:1px solid rgba(255,255,255,.08);
+font-size:.95rem;
 }
-.attr-table tr:nth-child(even) td{ background:#0f233f; }
-.attr-table td:first-child{ color:#cbd5e1; }
-.attr-table td.value{ text-align:right; font-weight:700; }
+.attr-table td:first-child{ color:#d6e6ff; }
+.attr-table td.value{
+text-align:right;
+border-left:1px solid rgba(255,255,255,.08);
+padding-right:12px;
+}
 
-/* value coloring (diwarnai via JS menambah class) */
-.value.high{ color:#22c55e; }      /* >=85 */
-.value.mid{ color:#fbbf24; }       /* 70-84 */
-.value.low{ color:#f97316; }       /* 50-69 */
-.value.verylow{ color:#ef4444; }   /* <50 */
+/* Value coloring */
+.value.high{ color:#22c55e; }     /* >=85 */
+.value.mid{ color:#fbbf24; }      /* 70–84 */
+.value.low{ color:#f97316; }      /* 50–69 */
+.value.verylow{ color:#ef4444; }  /* <50 */
 
-/* Stats table */
-.stats-card{ padding:16px; margin-top:18px; }
+/* ===================== MATCH STATISTIC (outline tebal juga) ===================== */
+/* Biar tidak double-border dengan card luarnya */
+.stats-card{
+background: transparent;
+border: none;
+box-shadow: none;
+padding: 0;
+margin-top: 18px;
+}
+
 .table-wrap{ overflow:auto; }
-.stat-table{ width:100%; border-collapse:collapse; text-align:center; }
-.stat-table thead th{
-background:#0b1f36; color:#e5e7eb; padding:10px; border-bottom:2px solid var(--stroke);
+
+/* Tabel statistik dengan outline seperti attribute */
+.stat-table{
+border-collapse: separate;
+border-spacing: 0;
+width:100%;
+background:#0f1a2b;
+border-radius:14px;
+overflow:hidden;
+
+/* outline DITEBALIN (±2px) */
+border: 2px solid rgba(148,163,184,.22);
+box-shadow:
+0 0 0 1.5px rgba(6,15,30,.70),
+inset 0 1px 0 rgba(255,255,255,.06),
+0 10px 26px rgba(0,0,0,.36);
+text-align:center;
 }
-.stat-table td{ padding:10px; border-bottom:1px solid var(--stroke); }
-.stat-table tbody tr:hover{ background:#0f243f; }
+
+/* Header tabel statistik */
+.stat-table thead th{
+background:#0e2137;
+color:#cfe3ff;
+font-weight:800;
+letter-spacing:.04em;
+padding:12px 10px;
+border-bottom:1px solid rgba(255,255,255,.10);
+}
+.stat-table thead th:first-child{ text-align:left; padding-left:16px; }
+
+/* Body zebra + hover */
+.stat-table td{
+padding:12px 10px;
+border-bottom:1px solid rgba(255,255,255,.08);
+}
+.stat-table tbody tr:nth-child(odd)  td{ background:#0c1a2f; }
+.stat-table tbody tr:nth-child(even) td{ background:#0f2238; }
+.stat-table tbody tr:hover td{ background:#14243a; }
+
+.stat-table td:first-child{
+text-align:left; padding-left:16px; font-weight:700; color:#eaf2ff;
+}
+
+/* bintang rating */
 .stars{ color:#fbbf24; letter-spacing:.12em; }
 
-/* Bottom links */
+/* ===================== Buttons ===================== */
 .bottom-links{ text-align:center; margin:16px 0 32px; }
-.btn{ display:inline-block; margin:6px; padding:10px 16px; border-radius:8px; color:#fff; text-decoration:none; font-weight:700; }
+.btn{ display:inline-block; margin:6px; padding:10px 16px; border-radius:10px; color:#fff; text-decoration:none; font-weight:800; }
 .btn.compare{ background:#e55e10; }
 .btn.prev{ background:#3498db; }
 .btn.next{ background:#27ae60; }
 
+/* ===================== Responsive ===================== */
 @media (max-width: 980px){
 .top-grid{ grid-template-columns:1fr; }
-.radar-wrap{ height:250px; }
+.radar-wrap{ height:300px; }
 .attr-grid{ grid-template-columns:1fr; }
+.stat-table thead th, .stat-table td{ padding:10px 8px; }
 }
