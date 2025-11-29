@@ -7,12 +7,13 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/players.css') }}">
 </head>
 <body>
+{% set gender_selected = gender_selected or request.args.get('gender','putra') %}
 
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar">
 <div class="nav-container">
   <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo" />
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
     <span>Superstar Fest</span>
   </div>
 
@@ -20,10 +21,8 @@
 
   <ul id="main-menu" class="nav-menu">
       <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
-      <li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
-      <li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
     <li>
-      <a href="/clubs"
+      <a href="{{ url_for('urls.clubs', gender=gender_selected) }}"
         class="{% if request.path.startswith('/clubs')
                 or request.path.startswith('/players')
                 or request.path.startswith('/auth_club')
@@ -31,7 +30,7 @@
         Performance Player
       </a>
     </li>
-    <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
+    <li><a href="{{ url_for('urls.pin_admin', gender=gender_selected) }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
   </ul>
 </div>
 </nav>
@@ -43,7 +42,7 @@
 
 <!-- Header Bar (Back + Title) -->
 <div class="header-bar">
-  <a class="back-btn" href="/clubs"><span class="chev">‹</span> Back</a>
+  <a class="back-btn" href="{{ url_for('urls.clubs', ku=ku_selected, gender=gender_selected) }}"><span class="chev">‹</span> Back</a>
 </div>
 
 <!-- Title di tengah -->
@@ -51,6 +50,8 @@
 
 <!-- Search Section -->
 <form class="search-form" action="" method="get" id="players-search-form" role="search">
+  <input type="hidden" name="ku" value="{{ ku_selected }}">
+  <input type="hidden" name="gender" value="{{ gender_selected }}">
   <div class="search-pill">
     <input type="text" id="search" name="q" placeholder="Cari pemain di klub ini..."
           value="{{ q }}" inputmode="search" autocomplete="off">
@@ -79,7 +80,7 @@
           <span>Assists: {{ player.Assists }}</span>
           <span>Matches: {{ player.Matches }}</span>
         </div>
-        <a href="{{ url_for('urls.get', name=player.Name) }}" class="detail-btn">See Detail</a>
+        <a href="{{ url_for('urls.get', name=player.Name, gender=gender_selected) }}" class="detail-btn">See Detail</a>
       </div>
     {% endif %}
   {% endfor %}

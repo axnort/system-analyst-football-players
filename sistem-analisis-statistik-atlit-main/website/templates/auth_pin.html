@@ -11,12 +11,13 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/auth_pin.css') }}">
 </head>
 <body>
+{% set gender_selected = gender_selected or request.args.get('gender','putra') %}
 
 <!-- ===== NAVBAR (identik dengan halaman clubs) ===== -->
 <nav class="navbar">
 <div class="nav-container">
 <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
     <span>Superstar Fest</span>
 </div>
 
@@ -26,13 +27,6 @@
 <!-- Menu lengkap -->
 <ul id="main-menu" class="nav-menu">
     <li><a href="/" class="{{ 'active' if request.path == '/' else '' }}">Home</a></li>
-    <li><a href="/klasemen" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
-    <li>
-    <a href="{{ url_for('urls.page_top_skor') }}"
-        class="{{ 'active' if request.path.startswith('/top_skor') else '' }}">
-        Top Skor
-    </a>
-    </li>
 
     {# === Penting: Performance Player aktif untuk alur PIN/Club/Player === #}
     <li>
@@ -78,7 +72,8 @@
 
     {# ==== MODE KLUB (auth_club) ==== #}
     {% if club_slug %}
-    <form method="post" action="{{ url_for('urls.auth_club', slug=club_slug, ku=ku) }}">
+    <form method="post" action="{{ url_for('urls.auth_club', slug=club_slug, ku=ku, gender=gender_selected) }}">
+        <input type="hidden" name="gender" value="{{ gender_selected }}">
         <div class="form-row">
         <label>Club</label>
         <input type="text" class="input readonly"
@@ -97,13 +92,14 @@
 
         <div class="actions">
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="{{ url_for('urls.clubs', ku=ku or 'KU8') }}" class="btn btn-ghost">Cancel</a>
+        <a href="{{ url_for('urls.clubs', ku=ku or 'KU8', gender=gender_selected) }}" class="btn btn-ghost">Cancel</a>
         </div>
     </form>
 
     {# ==== MODE PLAYER (lama) ==== #}
     {% elif player %}
-    <form method="post" action="{{ url_for('urls.auth_check', name=player.Name) }}">
+    <form method="post" action="{{ url_for('urls.auth_check', name=player.Name, gender=gender_selected) }}">
+        <input type="hidden" name="gender" value="{{ gender_selected }}">
         <div class="form-row">
         <label>Player</label>
         <input type="text" class="input readonly" value="{{ player.Name }}" readonly>
@@ -126,7 +122,7 @@
 
         <div class="actions">
         <button type="submit" class="btn btn-primary">Submit</button>
-        <a href="{{ url_for('urls.clubs', ku='KU8') }}" class="btn btn-ghost">Cancel</a>
+        <a href="{{ url_for('urls.clubs', ku='KU8', gender=gender_selected) }}" class="btn btn-ghost">Cancel</a>
         </div>
     </form>
 

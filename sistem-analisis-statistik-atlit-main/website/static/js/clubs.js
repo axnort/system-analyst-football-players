@@ -30,6 +30,7 @@ if (!a.classList.contains('active') && href === path) a.classList.add('active');
 const form   = qs("#club-search-form");
 const search = qs("#search");
 const kuSel  = qs("#ku");
+const genderSel = qs("#gender");
 
 if (form && search) {
 search.addEventListener("keydown", (e) => {
@@ -38,6 +39,11 @@ search.addEventListener("keydown", (e) => {
 }
 if (form && kuSel) {
 kuSel.addEventListener("change", () => {
+    form.requestSubmit ? form.requestSubmit() : form.submit();
+});
+}
+if (form && genderSel) {
+genderSel.addEventListener("change", () => {
     form.requestSubmit ? form.requestSubmit() : form.submit();
 });
 }

@@ -86,22 +86,30 @@ const ds = [];
 if (p1) ds.push({
 label: p1.Name,
 data: [n(p1.Speed),n(p1.Vision),n(p1.Attacking),n(p1.Technical),n(p1.Aerial),n(p1.Defending),n(p1.Mental),physicalAggregate(p1)],
-backgroundColor: 'rgba(34,197,94,0.22)',
+backgroundColor: 'rgba(34,197,94,0.16)',
 borderColor: '#22c55e',
-borderWidth: 2,
+borderWidth: 3,
+borderJoinStyle: 'round',
+fill: true,
 pointBackgroundColor: '#22c55e',
-pointBorderColor: 'transparent',
-pointRadius: 3
+pointBorderColor: '#0b1020',
+pointBorderWidth: 2,
+pointRadius: 4,
+hoverBorderWidth: 4
 });
 if (p2) ds.push({
 label: p2.Name,
 data: [n(p2.Speed),n(p2.Vision),n(p2.Attacking),n(p2.Technical),n(p2.Aerial),n(p2.Defending),n(p2.Mental),physicalAggregate(p2)],
-backgroundColor: 'rgba(96,165,250,0.22)',
+backgroundColor: 'rgba(96,165,250,0.14)',
 borderColor: '#60a5fa',
-borderWidth: 2,
+borderWidth: 3,
+borderJoinStyle: 'round',
+fill: true,
 pointBackgroundColor: '#60a5fa',
-pointBorderColor: 'transparent',
-pointRadius: 3
+pointBorderColor: '#0b1020',
+pointBorderWidth: 2,
+pointRadius: 4,
+hoverBorderWidth: 4
 });
 
 new Chart(c.getContext('2d'),{

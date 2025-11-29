@@ -9,16 +9,16 @@ btn.setAttribute('aria-expanded', open ? 'true' : 'false');
 });
 })();
 
-/* ===== Value coloring for attributes ===== */
+/* ===== Value coloring for attributes (cards) ===== */
 (function(){
-document.querySelectorAll('.attr-table td.value').forEach(td=>{
-const v = parseInt(td.textContent,10);
-if (isNaN(v)) return;
-td.classList.remove('high','mid','low','verylow');
-if (v >= 85) td.classList.add('high');
-else if (v >= 70) td.classList.add('mid');
-else if (v >= 50) td.classList.add('low');
-else td.classList.add('verylow');
+document.querySelectorAll('.attr-item .value').forEach(el=>{
+const v = parseInt(el.textContent,10);
+if (Number.isNaN(v)) return;
+el.classList.remove('high','mid','low','verylow');
+if (v >= 85) el.classList.add('high');
+else if (v >= 70) el.classList.add('mid');
+else if (v >= 50) el.classList.add('low');
+else el.classList.add('verylow');
 });
 })();
 

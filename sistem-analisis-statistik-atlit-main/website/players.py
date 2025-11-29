@@ -4,9 +4,14 @@ from typing import List, Optional
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
-CSV_FILE = BASE_DIR / "database" / "players_dummy.csv"
+CSV_FILE_PUTRA = BASE_DIR / "database" / "players_dummy.csv"
+CSV_FILE_PUTRI = BASE_DIR / "database" / "players_dummy_putri.csv"
+CSV_FILES = {
+    "putra": CSV_FILE_PUTRA,
+    "putri": CSV_FILE_PUTRI,
+}
 CSV_FILE_MATCH = BASE_DIR / "database" / "match_stat.csv"
-CSV_FILE.parent.mkdir(parents=True, exist_ok=True)
+CSV_FILE_PUTRA.parent.mkdir(parents=True, exist_ok=True)
 CSV_FILE_CLUB_PIN = BASE_DIR / "database" / "club_pin.csv"
 
 
@@ -82,6 +87,18 @@ class Player:
 
 
 class PlayerRepository:
+    # Simple in-memory caches to avoid re-reading CSV on every request.
+    _cache_players: dict = {}
+    _cache_match_rows: list = []
+
+    @staticmethod
+    def _invalidate_cache(gender: str | None = None):
+        if gender:
+            PlayerRepository._cache_players.pop(PlayerRepository._normalize_gender(gender), None)
+        else:
+            PlayerRepository._cache_players.clear()
+        PlayerRepository._cache_match_rows = []
+
     @staticmethod
     def _fieldnames():
         return list(Player.__annotations__.keys())
@@ -94,29 +111,53 @@ class PlayerRepository:
             return 0
 
     @staticmethod
-    def load_all() -> List[Player]:
+    def _normalize_gender(gender: str) -> str:
+        g = (gender or "").strip().lower()
+        return "putri" if g == "putri" else "putra"
+
+    @staticmethod
+    def _csv_for_gender(gender: str):
+        key = PlayerRepository._normalize_gender(gender)
+        return CSV_FILES.get(key, CSV_FILE_PUTRA)
+
+    @staticmethod
+    def _norm_name(name: str) -> str:
+        return (name or "").strip().lower()
+
+    @staticmethod
+    def load_all(gender: str = "putra") -> List[Player]:
+        g = PlayerRepository._normalize_gender(gender)
+        # Return cached players if available (data is read-only during runtime).
+        if g in PlayerRepository._cache_players:
+            return PlayerRepository._cache_players[g]
+
         players: List[Player] = []
+        csv_path = PlayerRepository._csv_for_gender(g)
 
         # buat file dengan header jika belum ada
-        if not CSV_FILE.exists():
-            with CSV_FILE.open("w", newline="", encoding="utf-8-sig") as f:
+        if not csv_path.exists():
+            with csv_path.open("w", newline="", encoding="utf-8-sig") as f:
                 csv.DictWriter(f, fieldnames=PlayerRepository._fieldnames()).writeheader()
             return players
 
         # siapkan (opsional) data match
-        match_rows: List[dict] = []
-        if CSV_FILE_MATCH.is_file():
-            with CSV_FILE_MATCH.open(newline="", encoding="utf-8-sig") as m:
-                match_rows = list(csv.DictReader(m))
-        elif CSV_FILE_MATCH.is_dir():
-            import glob
-            for path in sorted(glob.glob(str(CSV_FILE_MATCH / "*.csv"))):
-                with open(path, newline="", encoding="utf-8-sig") as m:
-                    match_rows.extend(list(csv.DictReader(m)))
+        if PlayerRepository._cache_match_rows:
+            match_rows: List[dict] = PlayerRepository._cache_match_rows
+        else:
+            match_rows = []
+            if CSV_FILE_MATCH.is_file():
+                with CSV_FILE_MATCH.open(newline="", encoding="utf-8-sig") as m:
+                    match_rows = list(csv.DictReader(m))
+            elif CSV_FILE_MATCH.is_dir():
+                import glob
+                for path in sorted(glob.glob(str(CSV_FILE_MATCH / "*.csv"))):
+                    with open(path, newline="", encoding="utf-8-sig") as m:
+                        match_rows.extend(list(csv.DictReader(m)))
+            PlayerRepository._cache_match_rows = match_rows
 
         to_int = PlayerRepository._to_int
 
-        with CSV_FILE.open(newline="", encoding="utf-8-sig") as f:
+        with csv_path.open(newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:
                 if not row.get("Name"):
@@ -136,7 +177,7 @@ class PlayerRepository:
                     Technical=to_int(row.get("Technical", 0)),
                     Club=row.get("Club", ""),
                     LogoClub=row.get("LogoClub", ""),
-                    Position=to_int(row.get("Position", 0)),
+                    Position=row.get("Position", ""),
                     DateOfBirth=row.get("DateOfBirth", ""),
                     Height=to_int(row.get("Height", 0)),
                     Weight=to_int(row.get("Weight", 0)),
@@ -215,37 +256,51 @@ class PlayerRepository:
 
                 players.append(p)
 
+        PlayerRepository._cache_players[g] = players
         return players
 
     @staticmethod
-    def save_all(players: List[Player]) -> None:
-        with CSV_FILE.open("w", newline="", encoding="utf-8-sig") as f:
+    def save_all(players: List[Player], gender: str = "putra") -> None:
+        csv_path = PlayerRepository._csv_for_gender(gender)
+        with csv_path.open("w", newline="", encoding="utf-8-sig") as f:
             writer = csv.DictWriter(f, fieldnames=PlayerRepository._fieldnames())
             writer.writeheader()
             for player in players:
                 writer.writerow(asdict(player))
+        PlayerRepository._invalidate_cache(gender)
 
     @staticmethod
-    def add(player: Player) -> None:
-        players = PlayerRepository.load_all()
+    def add(player: Player, gender: str = "putra") -> None:
+        players = PlayerRepository.load_all(gender)
         players.append(player)
-        PlayerRepository.save_all(players)
+        PlayerRepository.save_all(players, gender)
 
     @staticmethod
-    def find_by_name(name: str) -> Optional[Player]:
-        players = PlayerRepository.load_all()
+    def find_by_name(name: str, gender: str = "putra") -> Optional[Player]:
+        players = PlayerRepository.load_all(gender)
+        target = PlayerRepository._norm_name(name)
         next_player = None
         prev_player = None
         for i, p in enumerate(players):
-            if p.Name.lower() == name.lower():
+            if PlayerRepository._norm_name(p.Name) == target:
                 next_player = players[i + 1] if i + 1 < len(players) else None
                 prev_player = players[i - 1] if i - 1 >= 0 else None
                 return {"player": p, "next": next_player, "prev": prev_player}
         return None
 
     @staticmethod
-    def update(name: str, new_data: dict) -> bool:
-        players = PlayerRepository.load_all()
+    def find_by_name_any(name: str) -> Optional[dict]:
+        """Cari pemain di dataset putra lalu putri. Kembalikan juga gender sumber."""
+        for g in ("putra", "putri"):
+            data = PlayerRepository.find_by_name(name, gender=g)
+            if data:
+                data["gender"] = g
+                return data
+        return None
+
+    @staticmethod
+    def update(name: str, new_data: dict, gender: str = "putra") -> bool:
+        players = PlayerRepository.load_all(gender)
         updated = False
         for i, p in enumerate(players):
             if p.Name.lower() == name.lower():
@@ -256,21 +311,21 @@ class PlayerRepository:
                 updated = True
                 break
         if updated:
-            PlayerRepository.save_all(players)
+            PlayerRepository.save_all(players, gender)
         return updated
 
     @staticmethod
-    def delete(name: str) -> bool:
-        players = PlayerRepository.load_all()
+    def delete(name: str, gender: str = "putra") -> bool:
+        players = PlayerRepository.load_all(gender)
         new_players = [p for p in players if p.Name.lower() != name.lower()]
         if len(new_players) != len(players):
-            PlayerRepository.save_all(new_players)
+            PlayerRepository.save_all(new_players, gender)
             return True
         return False
 
     @staticmethod
-    def paginate(page: int, per_page: int):
-        players = PlayerRepository.load_all()
+    def paginate(page: int, per_page: int, gender: str = "putra"):
+        players = PlayerRepository.load_all(gender)
         start = (page - 1) * per_page
         end = start + per_page
         next_ = end < len(players)
@@ -287,10 +342,10 @@ class PlayerRepository:
         }
 
     @staticmethod
-    def load_clubs():
+    def load_clubs(gender: str = "putra"):
         """Kembalikan daftar unik klub dengan kategori & logo (dari photo pertama yang ditemukan)."""
         clubs = {}
-        for p in PlayerRepository.load_all():
+        for p in PlayerRepository.load_all(gender):
             key = (p.Club.strip(), p.Category.strip())
             if not key[0]:
                 continue

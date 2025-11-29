@@ -12,7 +12,7 @@
 <nav class="navbar">
 <div class="nav-container">
 <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
     <span>Superstar Fest</span>
 </div>
 
@@ -20,8 +20,6 @@
 
 <ul id="main-menu" class="nav-menu">
 <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
-<li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
-<li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
 <li><a href="{{ url_for('urls.clubs') }}" class="{{ 'active' if request.path.startswith('/clubs') else '' }}">Performance Player</a></li>
 <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
 </ul>
@@ -39,6 +37,7 @@
 
 {% set q = request.args.get('q','') %}
 {% set ku_selected = request.args.get('ku','KU8') %}
+{% set gender_selected = gender_selected or request.args.get('gender','putra') %}
 
 <!-- Search + KU (compact pill) -->
 <form class="search-row" action="/clubs" method="get" id="club-search-form" role="search">
@@ -60,6 +59,16 @@
     </select>
     </div>
 </div>
+
+<div class="ku-wrapper">
+    <label for="gender" class="ku-label">Gender</label>
+    <div class="ku-select-box">
+    <select id="gender" name="gender" class="ku-select">
+        <option value="putra" {% if gender_selected=='putra' %}selected{% endif %}>Putra</option>
+        <option value="putri" {% if gender_selected=='putri' %}selected{% endif %}>Putri</option>
+    </select>
+    </div>
+</div>
 </form>
 
 <!-- Clubs Grid -->
@@ -72,7 +81,7 @@
     {% if pass_q and pass_ku %}
     {% set safe_slug = c.slug if c.slug else (c.Name|replace(' ','-')|lower) %}
     <a class="club-card"
-        href="/auth_club/{{ safe_slug }}?ku={{ ku_selected }}"
+        href="/auth_club/{{ safe_slug }}?ku={{ ku_selected }}&gender={{ gender_selected }}"
         data-slug="{{ safe_slug }}" data-ku="{{ ku_selected }}">
         <img class="club-logo"
             src="{{ c.Logo or url_for('static', filename='Images/Logo.jpg') }}"

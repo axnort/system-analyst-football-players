@@ -12,7 +12,7 @@
 <nav class="navbar">
 <div class="nav-container">
 <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
     <span>Superstar Fest</span>
 </div>
 
@@ -20,8 +20,6 @@
 
 <ul id="main-menu" class="nav-menu">
     <li><a href="{{ url_for('urls.home') }}" class="{{ 'active' if request.path == url_for('urls.home') else '' }}">Home</a></li>
-    <li><a href="{{ url_for('urls.page_klasemen') }}" class="{{ 'active' if request.path.startswith('/klasemen') else '' }}">Klasemen</a></li>
-    <li><a href="{{ url_for('urls.page_top_skor') }}" class="{{ 'active' if request.path.startswith('/topskor') else '' }}">Top Skor</a></li>
     <li><a href="{{ url_for('urls.clubs') }}" class="{{ 'active' if request.path.startswith('/clubs') else '' }}">Performance Player</a></li>
     <li><a href="{{ url_for('urls.pin_admin') }}" class="{{ 'active' if request.path.startswith('/pin_admin') else '' }}">Compare Player</a></li>
 </ul>

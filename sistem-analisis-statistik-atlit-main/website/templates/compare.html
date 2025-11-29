@@ -9,12 +9,11 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-
 <!-- NAVBAR -->
 <nav class="navbar">
 <div class="nav-container">
   <div class="logo">
-    <img src="{{ url_for('static', filename='Images/Logo.jpg') }}" alt="Logo"/>
+    <img src="{{ url_for('static', filename='aset/Logo.jpg') }}" alt="Logo"/>
     <span>Superstar Fest</span>
   </div>
 
@@ -22,10 +21,8 @@
 
   <ul id="main-menu" class="nav-menu">
     <li><a href="/">Home</a></li>
-    <li><a href="/klasemen">Klasemen</a></li>
-    <li><a href="{{ url_for('urls.page_top_skor') }}">Top Skor</a></li>
-    <li><a href="/clubs">Performance Player</a></li>
-    <li><a href="/compare" class="active">Compare Player</a></li>
+    <li><a href="{{ url_for('urls.clubs') }}">Performance Player</a></li>
+    <li><a href="{{ url_for('urls.compare') }}" class="active">Compare Player</a></li>
   </ul>
 </div>
 </nav>
@@ -42,18 +39,22 @@
     <label for="player1">Player 1</label>
     <div class="pill">
       <input id="player1" type="text" placeholder="Search Player 1..." value="{{ request.args.get('player1','') }}">
-      <button id="compare-button" class="pill-btn" title="Search">🔎</button>
+      <button id="compare-button" class="pill-btn" title="Search">dY"Z</button>
     </div>
   </div>
   <div class="search-field">
     <label for="player2">Player 2</label>
     <div class="pill">
       <input id="player2" type="text" placeholder="Search Player 2..." value="{{ request.args.get('player2','') }}">
-      <button id="compare-button-2" class="pill-btn" title="Search">🔎</button>
+      <button id="compare-button-2" class="pill-btn" title="Search">dY"Z</button>
     </div>
   </div>
   <button id="compare-submit" class="btn btn-primary">Compare</button>
 </div>
+
+{% if error %}
+<p class="notification" style="color:#ef4444">{{ error }}</p>
+{% endif %}
 
 {% if player1 and player2 %}
 <section class="compare-grid profile-only">
@@ -64,19 +65,18 @@
     <div class="identity big">
       <img class="avatar big" src="{{ player1.Photo }}"
             onerror="this.onerror=null;this.src='{{ url_for('static', filename='Images/avatar-default.png') }}'">
-      <ul class="info-list">
-        <li><span class="k">Name</span><span class="v">{{ player1.Name }}</span></li>
-        <li><span class="k">Club</span><span class="v">{{ player1.Team }}</span></li>
-        {% if player1.Position %}<li><span class="k">Position</span><span class="v">{{ player1.Position }}</span></li>{% endif %}
-        {% if player1.Age %}<li><span class="k">Age</span><span class="v">{{ player1.Age }}</span></li>{% endif %}
-        {% if player1.Season %}<li><span class="k">Season</span><span class="v">{{ player1.Season }}</span></li>{% endif %}
-        {% if player1.Height %}<li><span class="k">Height</span><span class="v">{{ player1.Height }} cm</span></li>{% endif %}
-        {% if player1.Weight %}<li><span class="k">Weight</span><span class="v">{{ player1.Weight }} kg</span></li>{% endif %}
-      </ul>
+      <div class="meta-grid">
+        <div class="item"><span class="label">Name</span><span class="value">{{ player1.Name }}</span></div>
+        <div class="item"><span class="label">Club</span><span class="value">{{ player1.Club }}</span></div>
+        {% if player1.Position %}<div class="item"><span class="label">Position</span><span class="value">{{ player1.Position }}</span></div>{% endif %}
+        {% if player1.Height %}<div class="item"><span class="label">Height</span><span class="value">{{ player1.Height }} cm</span></div>{% endif %}
+        {% if player1.Weight %}<div class="item"><span class="label">Weight</span><span class="value">{{ player1.Weight }} kg</span></div>{% endif %}
+        {% if player1.Category %}<div class="item"><span class="label">Category</span><span class="value">{{ player1.Category }}</span></div>{% endif %}
+      </div>
     </div>
 
     <a class="btn btn-primary btn-open"
-        href="/player/{{ player1.Name|urlencode }}?unlock=compare">
+        href="/player/{{ player1.Name|urlencode }}?unlock=compare&gender={{ gender1 or 'putra' }}">
       Open Performance
     </a>
   </aside>
@@ -96,19 +96,18 @@
     <div class="identity big">
       <img class="avatar big" src="{{ player2.Photo }}"
             onerror="this.onerror=null;this.src='{{ url_for('static', filename='Images/avatar-default.png') }}'">
-      <ul class="info-list">
-        <li><span class="k">Name</span><span class="v">{{ player2.Name }}</span></li>
-        <li><span class="k">Club</span><span class="v">{{ player2.Team }}</span></li>
-        {% if player2.Position %}<li><span class="k">Position</span><span class="v">{{ player2.Position }}</span></li>{% endif %}
-        {% if player2.Age %}<li><span class="k">Age</span><span class="v">{{ player2.Age }}</span></li>{% endif %}
-        {% if player2.Season %}<li><span class="k">Season</span><span class="v">{{ player2.Season }}</span></li>{% endif %}
-        {% if player2.Height %}<li><span class="k">Height</span><span class="v">{{ player2.Height }} cm</span></li>{% endif %}
-        {% if player2.Weight %}<li><span class="k">Weight</span><span class="v">{{ player2.Weight }} kg</span></li>{% endif %}
-      </ul>
+      <div class="meta-grid">
+        <div class="item"><span class="label">Name</span><span class="value">{{ player2.Name }}</span></div>
+        <div class="item"><span class="label">Club</span><span class="value">{{ player2.Club }}</span></div>
+        {% if player2.Position %}<div class="item"><span class="label">Position</span><span class="value">{{ player2.Position }}</span></div>{% endif %}
+        {% if player2.Height %}<div class="item"><span class="label">Height</span><span class="value">{{ player2.Height }} cm</span></div>{% endif %}
+        {% if player2.Weight %}<div class="item"><span class="label">Weight</span><span class="value">{{ player2.Weight }} kg</span></div>{% endif %}
+        {% if player2.Category %}<div class="item"><span class="label">Category</span><span class="value">{{ player2.Category }}</span></div>{% endif %}
+      </div>
     </div>
 
     <a class="btn btn-primary btn-open"
-        href="/player/{{ player2.Name|urlencode }}?unlock=compare">
+        href="/player/{{ player2.Name|urlencode }}?unlock=compare&gender={{ gender2 or 'putra' }}">
       Open Performance
     </a>
   </aside>

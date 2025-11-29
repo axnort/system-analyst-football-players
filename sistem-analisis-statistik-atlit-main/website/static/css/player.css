@@ -1,22 +1,18 @@
 /* ===================== THEME TOKENS (match referensi) ===================== */
 :root{
-/* palet inti */
---bg:#0b1020;              /* latar halaman navy gelap */
---ink:#0b132b;             /* navbar background */
---brand:#22c55e;           /* aksen hijau */
+--bg:#0b1020;
+--ink:#0b132b;
+--brand:#22c55e;
 
-/* panel/kartu & garis */
---card:#121e30;            /* kartu umum biru tua */
---panel-2:#0f1a2b;         /* header tabel / elemen lebih gelap */
---panel-3:#0d1828;         /* zebra row */
+--card:#14233a;            /* kartu lebih terang */
+--panel-2:#10243a;
+--panel-3:#0f1f34;
 --stroke:#2b3b52;
---line:rgba(255,255,255,.08);
+--line:rgba(255,255,255,.10);
 
-/* teks */
 --text:#e5e7eb;
 --muted:#9fb3c8;
 
-/* layout */
 --content-max: 1200px;
 --gutter: 20px;
 }
@@ -33,7 +29,7 @@ color:var(--text);
 /* ===================== NAVBAR ===================== */
 .navbar{
 position:sticky; top:0; z-index:1000;
-background:var(--ink);
+background:#0f172a;
 border-bottom:2px solid var(--brand);
 padding:20px 56px;
 box-shadow:0 4px 18px rgba(0,0,0,.25);
@@ -139,7 +135,7 @@ line-height: 1.2;
 .container{ max-width: 100%; margin: 0; padding: 0; }
 
 .card{
-background: var(--card);
+background: linear-gradient(150deg, #162a42, #102035);
 border:1px solid var(--line);
 border-radius:16px;
 box-shadow:0 10px 28px rgba(0,0,0,.28);
@@ -149,6 +145,7 @@ margin:0 0 10px 0; padding:10px 14px;
 font-weight:800; letter-spacing:.06em; color:#dbeafe;
 }
 .card-title.center{ text-align:center; }
+.info-card .card-title{ text-align:center; }
 
 /* ===================== Player – Info & Attribute ===================== */
 .top-grid{
@@ -157,129 +154,51 @@ display:grid; gap:22px; grid-template-columns: 1.1fr 1.9fr;
 .info-card{ padding:16px; }
 .attr-card{ padding:16px; }
 
-.info-top{ display:flex; gap:14px; align-items:flex-start; padding:0 8px; }
+.info-top{ display:flex; gap:16px; align-items:flex-start; padding:0 8px; }
 .info-photo{
-width:160px; height:200px; object-fit:cover; border-radius:8px;
-border:3px solid #1f3b5b;
+width:160px; height:200px; object-fit:cover; border-radius:10px;
+border:3px solid #1f3b5b; box-shadow:0 10px 24px rgba(0,0,0,.32);
 }
-.info-list{ list-style:none; margin:0; padding:0; display:grid; gap:4px; }
-.info-list span{ color:var(--muted); }
+.meta-grid{ display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 12px; width:100%; }
+.meta-grid .item{ display:flex; flex-direction:column; gap:2px; padding:10px 12px; border:1px solid rgba(255,255,255,.12); border-radius:10px; background: linear-gradient(150deg,#1b3555,#152b46); }
+.meta-grid .label{ text-transform:uppercase; letter-spacing:.4px; font-size:11px; color:#8aa4c2; }
+.meta-grid .value{ font-weight:700; color:#e6f4ee; font-size:14px; }
 
 .radar-wrap{
-margin-top:12px; background:var(--panel-2);
-border-radius:12px; padding:8px; height:320px;
+margin-top:24px; background: linear-gradient(150deg,#142840,#102133);
+border:1px solid rgba(255,255,255,.08);
+border-radius:14px; padding:12px; height:340px;
+box-shadow:0 6px 16px rgba(0,0,0,.24);
 }
 
-/* ===================== ATTRIBUTE TABLE (outline tebal) ===================== */
-.attr-grid{
-display:grid; grid-template-columns:repeat(3,1fr); gap:18px;
-}
-
-/* Tabel jelas terpisah dari background */
-.attr-table{
-border-collapse: separate;
-border-spacing: 0;
-background: #0f1a2b;                 /* sedikit lebih gelap dari kartu */
-border-radius: 14px;
-overflow: hidden;
-
-/* outline & depth — DITEBALIN (±2px) */
-border: 2px solid rgba(148,163,184,.22);      /* ring utama */
-box-shadow:
-0 0 0 1.5px rgba(6,15,30,.70),              /* outer dark ring */
-inset 0 1px 0 rgba(255,255,255,.06),        /* inner hairline */
-0 10px 26px rgba(0,0,0,.36);                /* drop shadow */
-}
-
-/* Header kontras */
-.attr-table thead th{
-background:#0e2137;
-color:#cfe3ff;
-letter-spacing:.06em;
-font-weight:800;
-padding:12px 10px;
-text-align:center;
-border-bottom:1px solid rgba(255,255,255,.10);
-}
-
-/* Zebra + hover + garis antar sel */
-.attr-table tbody tr:nth-child(odd)  td{ background:#0c1a2f; }
-.attr-table tbody tr:nth-child(even) td{ background:#0f2238; }
-.attr-table tbody tr:hover td{ background:#14243a; }
-.attr-table td{
-padding:10px 12px;
-border-bottom:1px solid rgba(255,255,255,.08);
-font-size:.95rem;
-}
-.attr-table td:first-child{ color:#d6e6ff; }
-.attr-table td.value{
-text-align:right;
-border-left:1px solid rgba(255,255,255,.08);
-padding-right:12px;
-}
-
-/* Value coloring */
-.value.high{ color:#22c55e; }     /* >=85 */
-.value.mid{ color:#fbbf24; }      /* 70–84 */
-.value.low{ color:#f97316; }      /* 50–69 */
-.value.verylow{ color:#ef4444; }  /* <50 */
-
-/* ===================== MATCH STATISTIC (outline tebal juga) ===================== */
-/* Biar tidak double-border dengan card luarnya */
-.stats-card{
-background: transparent;
-border: none;
-box-shadow: none;
-padding: 0;
-margin-top: 18px;
-}
-
-.table-wrap{ overflow:auto; }
-
-/* Tabel statistik dengan outline seperti attribute */
-.stat-table{
-border-collapse: separate;
-border-spacing: 0;
-width:100%;
+/* ===================== ATTRIBUTE CARDS ===================== */
+.attr-columns{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; }
+.attr-panel{
 background:#0f1a2b;
+border:1px solid rgba(255,255,255,.08);
 border-radius:14px;
-overflow:hidden;
-
-/* outline DITEBALIN (±2px) */
-border: 2px solid rgba(148,163,184,.22);
-box-shadow:
-0 0 0 1.5px rgba(6,15,30,.70),
-inset 0 1px 0 rgba(255,255,255,.06),
-0 10px 26px rgba(0,0,0,.36);
-text-align:center;
+padding:12px;
+box-shadow:0 8px 22px rgba(0,0,0,.32);
+display:flex; flex-direction:column; gap:10px;
 }
-
-/* Header tabel statistik */
-.stat-table thead th{
-background:#0e2137;
-color:#cfe3ff;
-font-weight:800;
-letter-spacing:.04em;
-padding:12px 10px;
-border-bottom:1px solid rgba(255,255,255,.10);
-}
-.stat-table thead th:first-child{ text-align:left; padding-left:16px; }
-
-/* Body zebra + hover */
-.stat-table td{
-padding:12px 10px;
+.attr-heading{
+text-transform:uppercase; letter-spacing:.08em; font-weight:800;
+color:#cfe3ff; text-align:center; padding:6px 4px;
 border-bottom:1px solid rgba(255,255,255,.08);
 }
-.stat-table tbody tr:nth-child(odd)  td{ background:#0c1a2f; }
-.stat-table tbody tr:nth-child(even) td{ background:#0f2238; }
-.stat-table tbody tr:hover td{ background:#14243a; }
-
-.stat-table td:first-child{
-text-align:left; padding-left:16px; font-weight:700; color:#eaf2ff;
+.attr-list{ display:grid; gap:8px; }
+.attr-item{
+display:flex; align-items:center; justify-content:space-between;
+padding:10px 12px;
+background:#0f1f36;
+border:1px solid rgba(255,255,255,.06);
+border-radius:10px;
 }
-
-/* bintang rating */
-.stars{ color:#fbbf24; letter-spacing:.12em; }
+.attr-item .label{ color:#d6e6ff; font-size:14px; }
+.attr-item .value{ font-weight:700; color:#22c55e; }
+.attr-item .value.mid{ color:#fbbf24; }
+.attr-item .value.low{ color:#f97316; }
+.attr-item .value.verylow{ color:#ef4444; }
 
 /* ===================== Buttons ===================== */
 .bottom-links{ text-align:center; margin:16px 0 32px; }
@@ -292,6 +211,21 @@ text-align:left; padding-left:16px; font-weight:700; color:#eaf2ff;
 @media (max-width: 980px){
 .top-grid{ grid-template-columns:1fr; }
 .radar-wrap{ height:300px; }
-.attr-grid{ grid-template-columns:1fr; }
-.stat-table thead th, .stat-table td{ padding:10px 8px; }
+.attr-columns{ grid-template-columns:1fr; }
+}
+
+@media (max-width: 720px){
+.page-wrap{ padding:0 14px; }
+.back-btn{ padding:8px 12px; font-size:14px; }
+.page-title{ font-size:24px; margin:12px 0 22px; }
+.card{ border-radius:12px; }
+.info-card, .attr-card{ padding:12px; }
+.info-top{ flex-direction:column; align-items:center; gap:12px; }
+.info-photo{ width:140px; height:175px; }
+.meta-grid{ width:100%; }
+.meta-grid{ grid-template-columns:1fr; width:100%; }
+.attr-columns{ gap:12px; }
+.attr-panel{ padding:10px; }
+.attr-item{ padding:8px 10px; }
+.radar-wrap{ height:240px; padding:10px; }
 }

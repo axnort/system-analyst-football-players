@@ -4,7 +4,7 @@
 1) FORMAT SG + COLLAPSE
 ========================= */
 document.addEventListener("DOMContentLoaded", () => {
-// --- Format kolom SG (+x / 0 / -x) + kelas warna ---
+// --- Format kolom SG (+x / 0 / -x) + warna ---
 document.querySelectorAll(".klasemen-table td.sg").forEach((cell) => {
 const raw = (cell.textContent || "").trim();
 const val = Number(raw);
@@ -17,25 +17,21 @@ if (!Number.isNaN(val)) {
 }
 });
 
-// --- Collapse/expand per group-card ---
+// --- Collapse/expand tiap group-card ---
 document.querySelectorAll(".group-card").forEach((card, idx) => {
 const titleEl = card.querySelector(".group-title");
 const tbody = card.querySelector("tbody");
 if (!titleEl || !tbody) return;
 
-// Tambah properti aksesibilitas ringan (tanpa mengubah markup server)
-// role=button + tabindex agar bisa di-enter/space
 titleEl.setAttribute("role", "button");
 titleEl.setAttribute("tabindex", "0");
 
-// id kontrol untuk aria-controls (auto-gen kalau belum ada)
 if (!tbody.id) tbody.id = `group-tbody-${idx + 1}`;
 titleEl.setAttribute("aria-controls", tbody.id);
 titleEl.setAttribute("aria-expanded", "true");
 
 const toggle = () => {
     const collapsed = card.classList.toggle("collapsed");
-    // show/hide konten
     tbody.style.display = collapsed ? "none" : "";
     titleEl.setAttribute("aria-expanded", String(!collapsed));
 };
@@ -49,7 +45,7 @@ titleEl.addEventListener("keydown", (e) => {
 });
 });
 
-// --- Hilangkan empty-state jika memang ada baris data ---
+// --- Hapus empty-state kalau ada data ---
 const hasRows = document.querySelectorAll(".group-card tbody tr").length > 0;
 if (hasRows) {
 const empty = document.querySelector(".empty-state");
@@ -58,16 +54,14 @@ if (empty) empty.remove();
 });
 
 /* ===========================================
-2) KU, TAB (SPA), BRACKET IMG, & LIGHTBOX
+2) KU SWITCH, TAB SPA, BRACKET IMG, LIGHTBOX
 =========================================== */
-
-// Peta lokasi gambar bracket per KU (SAMA seperti punyamu)
+(() => {
 const BRACKET_IMG = {
-KU8:  "/static/aset/bracket/KU8/knockout.jpg",   // ganti sesuai file kamu
-KU12: "/static/aset/bracket/KU12/knockout.jpg"
+KU8:  "/static/aset/bracket/KU8/knockout.jpg",
+KU12: "/static/aset/bracket/KU12/knockout.jpg",
 };
 
-(() => {
 const kuSel = document.getElementById("kuSel");
 const tabs  = document.querySelectorAll(".tab");
 const secG  = document.getElementById("section-group");
@@ -76,7 +70,6 @@ const imgB  = document.getElementById("img-bracket");
 
 const params = new URLSearchParams(location.search);
 
-// Ambil init dari URL (fallback ke keadaan awal DOM)
 const initTab = params.get("tab") || (document.querySelector(".tab.active")?.dataset.tab || "group");
 const initKU  = params.get("ku")  || (kuSel?.value || "KU8");
 
@@ -84,13 +77,12 @@ if (kuSel) kuSel.value = initKU;
 setActiveTab(initTab);
 setBracket(initKU);
 
-// --- Ganti KU → reload (agar server render data KU saja) ---
+// --- Ganti KU → reload (agar server render data baru) ---
 kuSel?.addEventListener("change", () => {
 params.set("ku", kuSel.value);
-// pertahankan tab saat ini
 const currentTab = document.querySelector(".tab.active")?.dataset.tab || "group";
 params.set("tab", currentTab);
-location.search = params.toString(); // reload
+location.search = params.toString();
 });
 
 // --- Tabs SPA (tanpa reload) ---
@@ -115,7 +107,7 @@ imgB.src = BRACKET_IMG[ku] || BRACKET_IMG.KU8;
 imgB.alt = `Bagan Knockout ${ku}`;
 }
 
-/* -------- Lightbox -------- */
+/* -------- LIGHTBOX -------- */
 const lb      = document.getElementById("lightbox");
 const lbImg   = document.getElementById("lightbox-img");
 const lbCap   = document.getElementById("lightbox-cap");
@@ -133,7 +125,6 @@ const closeLB = () => {
 if (!lb || !lbImg) return;
 lb.classList.remove("show");
 lb.setAttribute("aria-hidden", "true");
-// beri jeda pendek sebelum kosongkan src untuk mencegah flicker
 setTimeout(() => { lbImg.src = ""; }, 50);
 };
 
@@ -142,3 +133,37 @@ lbClose?.addEventListener("click", closeLB);
 lb?.addEventListener("click", (e) => { if (e.target === lb) closeLB(); });
 window.addEventListener("keydown", (e) => { if (e.key === "Escape") closeLB(); });
 })();
+
+/* ===========================================
+3) HAMBURGER NAVBAR (MOBILE MENU)
+=========================================== */
+document.addEventListener("DOMContentLoaded", () => {
+const burger = document.querySelector(".hamburger");
+const menu   = document.querySelector(".nav-menu");
+
+if (!burger || !menu) return;
+
+// Saat tombol ☰ ditekan
+burger.addEventListener("click", (e) => {
+e.stopPropagation(); // biar gak langsung ketutup
+const isOpen = menu.classList.toggle("active");
+burger.setAttribute("aria-expanded", isOpen ? "true" : "false");
+});
+
+// Tutup menu kalau klik di luar area menu
+document.addEventListener("click", (e) => {
+if (!menu.contains(e.target) && !burger.contains(e.target)) {
+    menu.classList.remove("active");
+    burger.setAttribute("aria-expanded", "false");
+}
+});
+
+// Tutup menu saat salah satu link di dalam menu diklik
+menu.querySelectorAll("a").forEach((link) => {
+link.addEventListener("click", () => {
+    menu.classList.remove("active");
+    burger.setAttribute("aria-expanded", "false");
+});
+});
+});
+

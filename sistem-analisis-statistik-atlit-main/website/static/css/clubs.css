@@ -2,8 +2,8 @@
 :root {
 --bg: #0b1020;
 --ink: #0b132b;
---panel: #0f172a;
---panel-2: #0b1220;
+--panel: #14233a;
+--panel-2: #0f1f34;
 --text: #e8f5ef;
 --muted: #94a3b8;
 --brand: #22c55e;
@@ -156,6 +156,8 @@ margin: 8px 0 16px;
 }
 
 .back-btn {
+background: linear-gradient(150deg,#162a42,#102035);
+border: 1px solid var(--line-soft);
 display: inline-flex;
 align-items: center;
 gap: 8px;
@@ -164,9 +166,9 @@ font-size: 14px;
 text-decoration: none;
 padding: 10px 14px;
 border-radius: 12px;
-background: #1e293b;
+background: linear-gradient(150deg,#162a42,#102035);
 color: #fff;
-border: 1px solid var(--line);
+border: 1px solid var(--line-soft);
 transition: all 0.2s ease;
 }
 
@@ -197,6 +199,8 @@ flex-wrap: wrap;
 
 /* PILl: lebar dibatasi, tinggi fixed, center */
 .search-pill {
+background: linear-gradient(150deg,#162a42,#102035);
+border: 1px solid var(--line-soft);
 position: relative;
 display: flex;
 align-items: center;
@@ -204,7 +208,7 @@ height: var(--search-h);
 width: min(var(--search-w-max), 100%);
 max-width: var(--search-w-max);
 min-width: 260px;
-background: var(--panel);
+background: linear-gradient(150deg,#162a42,#102035);
 border: 1px solid var(--line-soft);
 border-radius: 999px;
 padding-left: 12px;
@@ -251,7 +255,7 @@ left: 0;
 top: calc(100% + 8px);
 width: 100%;
 background: #141a22;
-border: 1px solid var(--line);
+border: 1px solid var(--line-soft);
 border-radius: 12px;
 box-shadow: 0 12px 30px rgba(0,0,0,.35);
 overflow: hidden;
@@ -279,16 +283,22 @@ font-weight: 600;
 .ku-select-box { position: relative; }
 .ku-select {
 appearance: none;
+background: linear-gradient(150deg,#162a42,#102035);
+border: 1px solid var(--line-soft);
 width: 100%;
 padding: 12px 44px 12px 12px;
 border-radius: 12px;
-background: var(--panel);
+background: linear-gradient(150deg,#162a42,#102035);
 color: #fff;
-border: 1px solid var(--line);
+border: 1px solid var(--line-soft);
 font-size: 14px;
 font-weight: 700;
 cursor: pointer;
 transition: border-color .2s, box-shadow .2s;
+}
+.ku-select option{
+background:#0f172a;
+color:#e8f5ef;
 }
 .ku-select:hover { border-color: var(--brand); }
 .ku-select:focus {
@@ -320,7 +330,7 @@ grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
 display: flex;
 align-items: center;
 gap: 12px;
-background: var(--panel);
+background: linear-gradient(150deg,#162a42,#102035);
 border: 1px solid var(--line-soft);
 border-radius: 12px;
 padding: 14px;
@@ -377,7 +387,7 @@ flex-direction: column;
 gap: 14px;
 background: var(--ink);
 padding: 16px;
-border: 1px solid var(--line);
+border: 1px solid var(--line-soft);
 border-radius: 10px;
 width: min(85vw, 320px);
 box-shadow: 0 12px 30px rgba(0, 0, 0, .35);

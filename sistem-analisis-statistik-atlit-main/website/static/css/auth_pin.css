@@ -60,7 +60,7 @@ padding:10px 12px; border-radius:8px; margin:0 0 12px;
 .form-row label{ font-size:13px; color:var(--muted); margin-bottom:6px; }
 .input{
 width:100%; padding:10px 12px; border-radius:10px;
-border:1px solid var(--line); background:#0f172a; color:var(--text);
+border:1px solid var(--line); background: linear-gradient(180deg,#0b132b 0%,#0f172a 100%); color:var(--text);
 outline:none; font-size:14px;
 }
 .input.readonly{ opacity:.9; }
